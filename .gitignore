@@ -1,6 +1,7 @@
 .vscode/
 .gradle/
+.project/
 bin/
 build/
 *.jar
-!gradle/
+!gradle-wrapper.jar
