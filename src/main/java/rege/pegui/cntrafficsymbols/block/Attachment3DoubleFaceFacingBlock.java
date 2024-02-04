@@ -21,9 +21,12 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock{
 		.byID(st.get(DoubleFaceFacing.FACING).id%8+16)):
 		getDefaultState().with(WATERLOGGED,ctx.getWorld().getFluidState(ctx
 		.getBlockPos()).getFluid()==WATER).with(DoubleFaceFacing.FACING,
-		DoubleFaceFacing.byID(net.minecraft.util.math.RotationPropertyHelper
-		.fromYaw(ctx.getPlayerYaw()+180f))).with(Attachment3.ATTACHMENT,
-		(ctx.getSide().getId()==0)?Attachment3.UP:((ctx.getSide().getId()==1)?
-		Attachment3.DOWN:Attachment3.NONE));
+		DoubleFaceFacing.byID(ctx.getSide().getAxis().isVertical()?
+		net.minecraft.util.math.RotationPropertyHelper
+		.fromYaw(ctx.getPlayerYaw()+180f):(ctx.getSide().getHorizontal()+2)%4+24))
+		.with(Attachment3.ATTACHMENT,ctx.getSide().getAxis().isVertical()?
+		((ctx.getSide().getId()==0)?Attachment3.UP:Attachment3.DOWN):
+		((ctx.getBlockPos().getY()>=.75)?Attachment3.UP:
+		((ctx.getBlockPos().getY()<=.25)?Attachment3.DOWN:Attachment3.NONE)));
 	}
 }

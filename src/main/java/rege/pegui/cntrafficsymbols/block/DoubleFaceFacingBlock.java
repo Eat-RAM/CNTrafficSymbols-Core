@@ -46,20 +46,20 @@ implements net.minecraft.block.Waterloggable{
 		.byID(st.get(DoubleFaceFacing.FACING).id%8+16)):
 		getDefaultState().with(WATERLOGGED,ctx.getWorld().getFluidState(ctx
 		.getBlockPos()).getFluid()==WATER).with(DoubleFaceFacing.FACING,
-		DoubleFaceFacing.byID(RotationPropertyHelper
-		.fromYaw(ctx.getPlayerYaw()+180f)));
+		DoubleFaceFacing.byID(ctx.getSide().getAxis().isVertical()?RotationPropertyHelper
+		.fromYaw(ctx.getPlayerYaw()+180f):(ctx.getSide().getHorizontal()+2)%4+24));
 	}
 	@Override public BlockState getStateForNeighborUpdate(BlockState st,
 	Direction d,BlockState nst,WorldAccess w,BlockPos p,BlockPos np){
-  if (st.get(WATERLOGGED).booleanValue())w
+		if (st.get(WATERLOGGED).booleanValue())w
 		.scheduleFluidTick(p,WATER,WATER.getTickRate(w));
 		return super.getStateForNeighborUpdate(st,d,nst,w,p,np);
- }
+	}
 	@Override public FluidState getFluidState(BlockState st){
-  return st.get(WATERLOGGED).booleanValue()?WATER.getStill(false):
+		return st.get(WATERLOGGED).booleanValue()?WATER.getStill(false):
 		super.getFluidState(st);
- }
+	}
 	@Override public boolean canReplace(BlockState st,ItemPlacementContext ctx){
-  return st.get(DoubleFaceFacing.FACING).id<16&&ctx.getStack().isOf(asItem());
- }
+		return st.get(DoubleFaceFacing.FACING).id<16&&ctx.getStack().isOf(asItem());
+	}
 }
