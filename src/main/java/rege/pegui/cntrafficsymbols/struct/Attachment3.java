@@ -9,5 +9,5 @@ public enum Attachment3 implements net.minecraft.util.StringIdentifiable{
 	private static final Attachment3[]VARS={NONE,DOWN,UP};
 	public static Attachment3 byID(int id){return VARS[id];}
 	public static final EnumProperty<Attachment3>ATTACHMENT=
-	EnumProperty.of("attatchment",Attachment3.class);
+	EnumProperty.of("attachment",Attachment3.class);
 }

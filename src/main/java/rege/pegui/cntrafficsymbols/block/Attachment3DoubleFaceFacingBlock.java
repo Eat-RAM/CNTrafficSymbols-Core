@@ -26,7 +26,8 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock{
 		.fromYaw(ctx.getPlayerYaw()+180f):(ctx.getSide().getHorizontal()+2)%4+24))
 		.with(Attachment3.ATTACHMENT,ctx.getSide().getAxis().isVertical()?
 		((ctx.getSide().getId()==0)?Attachment3.UP:Attachment3.DOWN):
-		((ctx.getBlockPos().getY()>=.75)?Attachment3.UP:
-		((ctx.getBlockPos().getY()<=.25)?Attachment3.DOWN:Attachment3.NONE)));
+		((ctx.getHitPos().y-ctx.getBlockPos().getY()>=.75)?Attachment3.UP:
+		((ctx.getHitPos().y-ctx.getBlockPos().getY()<=.25)?Attachment3.DOWN:
+		Attachment3.NONE)));
 	}
 }
