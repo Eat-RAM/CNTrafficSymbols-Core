@@ -22,7 +22,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"dfmilk" {
+		"cntrafficsymbols" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
