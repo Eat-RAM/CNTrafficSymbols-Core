@@ -1,11 +1,7 @@
 package rege.pegui.cntrafficsymbols.block;
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 import static net.minecraft.util.shape.VoxelShapes.union;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 public class CircleStandingSymbolBlock
 extends Attachment3DoubleFaceFacingBlock{
 	public CircleStandingSymbolBlock(Settings s){super(s);}
@@ -133,8 +129,9 @@ extends Attachment3DoubleFaceFacingBlock{
 		cuboid(.9375,.46875,.15625,1,.78125,.84375),
 		cuboid(.9375,.53125,.125,1,.71875,.875)
 	);
-	@Override public VoxelShape
-	getOutlineShape(BlockState st,BlockView v,BlockPos p,ShapeContext c){
+	@Override public VoxelShape getOutlineShape(net.minecraft.block.BlockState st,
+	net.minecraft.world.BlockView v,net.minecraft.util.math.BlockPos p,
+	net.minecraft.block.ShapeContext c){
 		int f=st.get(rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing.FACING).id;
 		int i=st.get(rege.pegui.cntrafficsymbols.struct.Attachment3.ATTACHMENT).id;
 		switch(f){
