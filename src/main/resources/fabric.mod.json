@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols",
-  "version": "0.0.1-b3",
+  "version": "0.0.1-rc1",
   "name": "CNTrafficSymbols",
   "description": "A mod contains CN traffic symbols(signs, patterns, etc.)",
   "authors": [
     "REGEdt32",
-    "Manarein"
+    "Manarein",
+    "morrison2077",
+    "azaz-az"
   ],
   "contact": {},
   "license": "GPL-v2",
