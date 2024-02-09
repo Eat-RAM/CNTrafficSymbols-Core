@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols",
-  "version": "0.0.1-b2",
+  "version": "0.0.1-b3",
   "name": "CNTrafficSymbols",
   "description": "A mod contains CN traffic symbols(signs, patterns, etc.)",
   "authors": [
@@ -16,7 +16,7 @@
     "main": ["rege.pegui.cntrafficsymbols.Main"],
     "client": ["rege.pegui.cntrafficsymbols.MainClient"]
   },
-  "mixins": ["cntrafficsymbols.mixins.json"],
+  "mixins": [],
   "depends": {
     "fabricloader": ">=0.14.0",
     "minecraft": "1.20.x",

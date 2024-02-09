@@ -152,7 +152,7 @@ extends Attachment3DoubleFaceFacingBlock{
 			}
 			case 27:switch(i){
 				case 1:return SHAPE1W;
-				case 2:return SHAPE2S;
+				case 2:return SHAPE2W;
 				default:return SHAPE0W;
 			}
 		}
