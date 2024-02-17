@@ -44,8 +44,8 @@ public class DoubleFaceFacingBlock extends Block implements Waterloggable{
 		return true;
 	}
 	@Override protected void appendProperties(Builder<Block,BlockState>bd){
-		if(getWaterloggedProperty()){bd.add(DoubleFaceFacing.FACING,WATERLOGGED);}
-		else{bd.add(DoubleFaceFacing.FACING);}
+		bd.add(DoubleFaceFacing.FACING);
+		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
 	@Override public BlockState getPlacementState(ItemPlacementContext ctx){
 		BlockState st=ctx.getWorld().getBlockState(ctx.getBlockPos());

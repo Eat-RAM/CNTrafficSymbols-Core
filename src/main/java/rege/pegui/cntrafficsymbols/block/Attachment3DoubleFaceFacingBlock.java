@@ -13,9 +13,8 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock{
 		.with(Attachment3.ATTACHMENT,Attachment3.DOWN));
 	}
 	@Override protected void appendProperties(Builder<Block,BlockState>bd){
-		if(getWaterloggedProperty()){
-			bd.add(DoubleFaceFacing.FACING,Attachment3.ATTACHMENT,WATERLOGGED);
-		}else{bd.add(DoubleFaceFacing.FACING,Attachment3.ATTACHMENT);}
+		bd.add(DoubleFaceFacing.FACING,Attachment3.ATTACHMENT);
+		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
 	@Override public BlockState getPlacementState(ItemPlacementContext ctx){
 		BlockState st=ctx.getWorld().getBlockState(ctx.getBlockPos());

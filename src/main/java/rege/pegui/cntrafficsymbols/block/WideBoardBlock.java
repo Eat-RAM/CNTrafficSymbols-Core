@@ -83,8 +83,8 @@ public class WideBoardBlock extends Block implements Waterloggable{
 		return null;
 	}
 	@Override protected void appendProperties(Builder<Block,BlockState>bd){
-		if(getWaterloggedProperty()){bd.add(DoubleFaceFacing90.FACING,WATERLOGGED);}
-		else{bd.add(DoubleFaceFacing90.FACING);}
+		bd.add(DoubleFaceFacing90.FACING);
+		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
 	@Override public BlockState getPlacementState(ItemPlacementContext ctx){
 		BlockState st=ctx.getWorld().getBlockState(ctx.getBlockPos());
