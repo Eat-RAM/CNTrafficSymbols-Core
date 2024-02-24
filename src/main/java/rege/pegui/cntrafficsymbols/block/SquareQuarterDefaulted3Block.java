@@ -4,11 +4,8 @@ import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static rege.pegui.cntrafficsymbols.Main.getWaterloggedProperty;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -18,13 +15,11 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 public class SquareQuarterDefaulted3Block extends Block
-implements Waterloggable{
+implements ManagedWaterloggable{
 	public static final IntProperty NORTHWEST=IntProperty.of("northwest",0,2);
 	public static final IntProperty NORTHEAST=IntProperty.of("northeast",0,2);
 	public static final IntProperty SOUTHWEST=IntProperty.of("southwest",0,2);
@@ -33,10 +28,9 @@ implements Waterloggable{
 	private Item itm1;
 	private Item itm2;
 	public SquareQuarterDefaulted3Block(Item itm0,Item itm1,Item itm2,Settings s){
-		super(s);this.itm0=itm0;this.itm1=itm1;this.itm2=itm2;
-		BlockState st=getDefaultState().with(NORTHWEST,0).with(NORTHEAST,0)
-		.with(SOUTHWEST,0).with(SOUTHEAST,0);
-		if(getWaterloggedProperty())st=st.with(WATERLOGGED,false);
+		super(s);this.itm0=itm0;this.itm1=itm1;this.itm2=itm2;BlockState st=
+		getDefaultState().with(NORTHWEST,0).with(NORTHEAST,0).with(SOUTHWEST,0)
+		.with(SOUTHEAST,0);if(getWaterloggedProperty())st=st.with(WATERLOGGED,false);
 		setDefaultState(st);
 	}
 	public SquareQuarterDefaulted3Block(Settings s){
@@ -45,7 +39,8 @@ implements Waterloggable{
 		if(getWaterloggedProperty())st=st.with(WATERLOGGED,false);
 		setDefaultState(st);
 	}
-	@Override public ItemStack getPickStack(BlockView v,BlockPos p,BlockState st){
+	@Override public ItemStack
+	getPickStack(net.minecraft.world.BlockView v,BlockPos p,BlockState st){
 		byte s1=0;byte s2=0;switch(st.get(NORTHWEST).intValue()){
 			case 1:s1++;break;
 			case 2:s2++;break;
@@ -212,30 +207,16 @@ implements Waterloggable{
 			default:return st;
 		}
 	}
-	@Override public BlockState getStateForNeighborUpdate(BlockState st,
-	Direction d,BlockState nst,WorldAccess w,BlockPos p,BlockPos np){
+	@Override public BlockState getStateForNeighborUpdate(BlockState st,net
+	.minecraft.util.math.Direction d,BlockState nst,WorldAccess w,BlockPos p
+	,BlockPos np){
 		if(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())w
 		.scheduleFluidTick(p,WATER,WATER.getTickRate(w));
 		return super.getStateForNeighborUpdate(st,d,nst,w,p,np);
 	}
-	@Override public FluidState getFluidState(BlockState st){
+	@Override public net.minecraft.fluid.FluidState getFluidState(BlockState st){
 		return(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())?
 		WATER.getStill(false):super.getFluidState(st);
-	}
-	@Override public boolean canFillWithFluid(PlayerEntity pl,BlockView v,
-	BlockPos p,BlockState st,Fluid fl){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.canFillWithFluid(pl,v,p,st,fl);
-	}
-	@Override public boolean
-	tryFillWithFluid(WorldAccess w,BlockPos p,BlockState st,FluidState fst){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.tryFillWithFluid(w,p,st,fst);
-	}
-	@Override public ItemStack
-	tryDrainFluid(PlayerEntity pl,WorldAccess w,BlockPos p,BlockState st){
-		return getWaterloggedProperty()?Waterloggable.super.tryDrainFluid(pl,w,p,st):
-		ItemStack.EMPTY;
 	}
 	@Nullable public Item setItm0(@Nullable Item v){
 		Item r=itm0;if(r==null)itm0=v;

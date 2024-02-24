@@ -1,8 +1,6 @@
 package rege.pegui.cntrafficsymbols.block;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager.Builder;
 import rege.pegui.cntrafficsymbols.struct.Attachment3;
 import rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
@@ -12,7 +10,8 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock{
 		super(s);setDefaultState(getDefaultState()
 		.with(Attachment3.ATTACHMENT,Attachment3.DOWN));
 	}
-	@Override protected void appendProperties(Builder<Block,BlockState>bd){
+	@Override protected void appendProperties(net.minecraft.state.StateManager
+	.Builder<net.minecraft.block.Block,BlockState>bd){
 		bd.add(DoubleFaceFacing.FACING,Attachment3.ATTACHMENT);
 		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
@@ -28,8 +27,8 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock{
 		ctx.getBlockPos().getY()>=.75)?Attachment3.UP:((ctx.getHitPos().y-ctx
 		.getBlockPos().getY()<=.25)?Attachment3.DOWN:Attachment3.NONE)));
 		if(getWaterloggedProperty())sst=sst.with(WATERLOGGED,ctx.getWorld()
-		.getFluidState(ctx.getBlockPos()).getFluid()==
-		net.minecraft.fluid.Fluids.WATER);
+		.getFluidState(ctx.getBlockPos()).getFluid()==net.minecraft.fluid.Fluids
+		.WATER);
 		return sst;
 	}
 }

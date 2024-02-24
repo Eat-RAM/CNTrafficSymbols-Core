@@ -1,27 +1,21 @@
 package rege.pegui.cntrafficsymbols.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationPropertyHelper;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import rege.pegui.cntrafficsymbols.helper.DoubleFaceFacingMirrorer;
 import rege.pegui.cntrafficsymbols.helper.DoubleFaceFacingRotator;
 import rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing;
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static rege.pegui.cntrafficsymbols.Main.getWaterloggedProperty;
-public class DoubleFaceFacingBlock extends Block implements Waterloggable{
+public class DoubleFaceFacingBlock extends Block
+implements ManagedWaterloggable{
 	public DoubleFaceFacingBlock(Settings s){
 		super(s);BlockState st=getDefaultState().with(DoubleFaceFacing.FACING,
 		DoubleFaceFacing.SOUTH);
@@ -43,7 +37,8 @@ public class DoubleFaceFacingBlock extends Block implements Waterloggable{
 	@Override public boolean isTransparent(BlockState st,BlockView vi,BlockPos p){
 		return true;
 	}
-	@Override protected void appendProperties(Builder<Block,BlockState>bd){
+	@Override protected void appendProperties(net.minecraft.state.StateManager
+	.Builder<Block,BlockState>bd){
 		bd.add(DoubleFaceFacing.FACING);
 		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
@@ -58,32 +53,17 @@ public class DoubleFaceFacingBlock extends Block implements Waterloggable{
 		.getFluidState(ctx.getBlockPos()).getFluid()==WATER);
 		return sst;
 	}
-	@Override public BlockState getStateForNeighborUpdate(BlockState st,
-	Direction d,BlockState nst,WorldAccess w,BlockPos p,BlockPos np){
+	@Override public BlockState getStateForNeighborUpdate(BlockState st,Direction
+	d,BlockState nst,net.minecraft.world.WorldAccess w,BlockPos p,BlockPos np){
 		if (getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())w
 		.scheduleFluidTick(p,WATER,WATER.getTickRate(w));
 		return super.getStateForNeighborUpdate(st,d,nst,w,p,np);
 	}
-	@Override public FluidState getFluidState(BlockState st){
+	@Override public net.minecraft.fluid.FluidState getFluidState(BlockState st){
 		return(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())?
 		WATER.getStill(false):super.getFluidState(st);
 	}
 	@Override public boolean canReplace(BlockState st,ItemPlacementContext ctx){
 		return st.get(DoubleFaceFacing.FACING).id<16&&ctx.getStack().isOf(asItem());
-	}
-	@Override public boolean canFillWithFluid(PlayerEntity pl,BlockView v,
-	BlockPos p,BlockState st,Fluid fl){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.canFillWithFluid(pl,v,p,st,fl);
-	}
-	@Override public boolean
-	tryFillWithFluid(WorldAccess w,BlockPos p,BlockState st,FluidState fst){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.tryFillWithFluid(w,p,st,fst);
-	}
-	@Override public ItemStack
-	tryDrainFluid(PlayerEntity pl,WorldAccess w,BlockPos p,BlockState st){
-		return getWaterloggedProperty()?Waterloggable.super.tryDrainFluid(pl,w,p,st):
-		ItemStack.EMPTY;
 	}
 }

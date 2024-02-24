@@ -2,21 +2,11 @@ package rege.pegui.cntrafficsymbols.block;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import rege.pegui.cntrafficsymbols.helper.DoubleFaceFacing90Mirrorer;
 import rege.pegui.cntrafficsymbols.helper.DoubleFaceFacing90Rotator;
 import rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing90;
@@ -24,7 +14,7 @@ import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 import static rege.pegui.cntrafficsymbols.Main.getWaterloggedProperty;
-public class WideBoardBlock extends Block implements Waterloggable{
+public class WideBoardBlock extends Block implements ManagedWaterloggable{
 	public static final VoxelShape SHAPE0=cuboid(0,0,.5,1,1,.5625);
 	public static final VoxelShape SHAPE1=cuboid(.4375,0,0,.5,1,1);
 	public static final VoxelShape SHAPE2=cuboid(0,0,.4375,1,1,.5);
@@ -65,8 +55,8 @@ public class WideBoardBlock extends Block implements Waterloggable{
 		if(arri==-1)throw new IllegalArgumentException();
 		return arr=List.copyOf(arr);
 	}
-	@Override public VoxelShape
-	getOutlineShape(BlockState st,BlockView v,BlockPos p,ShapeContext c){
+	@Override public VoxelShape getOutlineShape(BlockState st,net.minecraft.world
+	.BlockView v,BlockPos p,net.minecraft.block.ShapeContext c){
 		switch(st.get(DoubleFaceFacing90.FACING).id){
 			case 0:return SHAPE0;
 			case 1:return SHAPE1;
@@ -82,7 +72,8 @@ public class WideBoardBlock extends Block implements Waterloggable{
 		}
 		return null;
 	}
-	@Override protected void appendProperties(Builder<Block,BlockState>bd){
+	@Override protected void appendProperties(net.minecraft.state.StateManager
+	.Builder<Block,BlockState>bd){
 		bd.add(DoubleFaceFacing90.FACING);
 		if(getWaterloggedProperty())bd.add(WATERLOGGED);
 	}
@@ -115,30 +106,15 @@ public class WideBoardBlock extends Block implements Waterloggable{
 		if(getWaterloggedProperty())sst=sst.with(WATERLOGGED,st.get(WATERLOGGED));
 		return sst;
 	}
-	@Override public BlockState getStateForNeighborUpdate(BlockState st,
-	Direction d,BlockState nst,net.minecraft.world.WorldAccess w,BlockPos p,
-	BlockPos np){
+	@Override public BlockState getStateForNeighborUpdate(BlockState st,net
+	.minecraft.util.math.Direction d,BlockState nst,net.minecraft.world
+	.WorldAccess w,BlockPos p,BlockPos np){
 		if(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())w
 		.scheduleFluidTick(p,WATER,WATER.getTickRate(w));
 		return super.getStateForNeighborUpdate(st,d,nst,w,p,np);
 	}
-	@Override public FluidState getFluidState(BlockState st){
+	@Override public net.minecraft.fluid.FluidState getFluidState(BlockState st){
 		return(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())?
 		WATER.getStill(false):super.getFluidState(st);
-	}
-	@Override public boolean canFillWithFluid(PlayerEntity pl,BlockView v,
-	BlockPos p,BlockState st,Fluid fl){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.canFillWithFluid(pl,v,p,st,fl);
-	}
-	@Override public boolean
-	tryFillWithFluid(WorldAccess w,BlockPos p,BlockState st,FluidState fst){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.tryFillWithFluid(w,p,st,fst);
-	}
-	@Override public ItemStack
-	tryDrainFluid(PlayerEntity pl,WorldAccess w,BlockPos p,BlockState st){
-		return getWaterloggedProperty()?Waterloggable.super.tryDrainFluid(pl,w,p,st):
-		ItemStack.EMPTY;
 	}
 }

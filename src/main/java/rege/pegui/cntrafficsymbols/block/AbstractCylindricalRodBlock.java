@@ -3,13 +3,8 @@ import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map.Entry;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.WorldAccess;
 import org.apache.commons.lang3.tuple.Triple;
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
@@ -18,7 +13,7 @@ import static net.minecraft.util.shape.VoxelShapes.empty;
 import static net.minecraft.util.shape.VoxelShapes.union;
 import static rege.pegui.cntrafficsymbols.Main.getWaterloggedProperty;
 public abstract class AbstractCylindricalRodBlock
-extends net.minecraft.block.Block implements Waterloggable{
+extends net.minecraft.block.Block implements ManagedWaterloggable{
 	public static final List<Entry<Triple<Double,Double,Double>,
 	Triple<Double,Double,Double>>>DOWN_CENTER_BASE=List
 	.of(new SimpleImmutableEntry<>(Triple.of(.375,0.,.4375),Triple
@@ -264,29 +259,14 @@ extends net.minecraft.block.Block implements Waterloggable{
 		.with(WATERLOGGED,false));
 	}
 	@Override public BlockState getStateForNeighborUpdate(BlockState st,net
-	.minecraft.util.math.Direction d,BlockState nst,WorldAccess w,BlockPos p,
-	BlockPos np){
+	.minecraft.util.math.Direction d,BlockState nst,net.minecraft.world
+	.WorldAccess w,BlockPos p,BlockPos np){
 		if(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())w
 		.scheduleFluidTick(p,WATER,WATER.getTickRate(w));
 		return super.getStateForNeighborUpdate(st,d,nst,w,p,np);
 	}
-	@Override public FluidState getFluidState(BlockState st){
+	@Override public net.minecraft.fluid.FluidState getFluidState(BlockState st){
 		return(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())?
 		WATER.getStill(false):super.getFluidState(st);
-	}
-	@Override public boolean canFillWithFluid(PlayerEntity pl,net.minecraft.world
-	.BlockView v,BlockPos p,BlockState st,net.minecraft.fluid.Fluid fl){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.canFillWithFluid(pl,v,p,st,fl);
-	}
-	@Override public boolean
-	tryFillWithFluid(WorldAccess w,BlockPos p,BlockState st,FluidState fst){
-		return getWaterloggedProperty()&&
-		Waterloggable.super.tryFillWithFluid(w,p,st,fst);
-	}
-	@Override public ItemStack
-	tryDrainFluid(PlayerEntity pl,WorldAccess w,BlockPos p,BlockState st){
-		return getWaterloggedProperty()?Waterloggable.super.tryDrainFluid(pl,w,p,st):
-		ItemStack.EMPTY;
 	}
 }

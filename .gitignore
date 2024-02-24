@@ -5,3 +5,4 @@ bin/
 build/
 *.jar
 !gradle-wrapper.jar
+*.pyc

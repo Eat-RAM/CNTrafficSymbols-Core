@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols",
-  "version": "0.0.2-a4",
+  "version": "0.0.2-b1",
   "name": "CNTrafficSymbols",
   "description": "A mod contains CN traffic symbols(signs, patterns, etc.)",
   "authors": [
