@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols",
-  "version": "0.0.2-b1",
+  "version": "0.0.2-b2",
   "name": "CNTrafficSymbols",
   "description": "A mod contains CN traffic symbols(signs, patterns, etc.)",
   "authors": [
@@ -22,7 +22,7 @@
   "mixins": ["cntrafficsymbols.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.0",
-    "minecraft": "1.20.x",
+    "minecraft": ">=1.20.0",
     "java": ">=16",
     "fabric-api": "*"
   },
