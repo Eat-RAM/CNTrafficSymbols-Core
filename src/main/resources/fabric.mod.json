@@ -13,7 +13,7 @@
   ],
   "contact": {},
   "license": "GPL-v2",
-  "icon": "assets/regedt32/icons/cntrafficsymbols.png",
+  "icon": "assets/regedt32/textures/icon/cntrafficsymbols.png",
   "environment": "*",
   "entrypoints": {
     "main": ["rege.pegui.cntrafficsymbols.Main"],
