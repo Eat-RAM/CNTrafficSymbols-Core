@@ -1,8 +1,12 @@
 .vscode/
+.idea/
 .gradle/
 .project/
 bin/
 build/
+out/
+run/
 *.jar
+*.iml
 !gradle-wrapper.jar
 *.pyc

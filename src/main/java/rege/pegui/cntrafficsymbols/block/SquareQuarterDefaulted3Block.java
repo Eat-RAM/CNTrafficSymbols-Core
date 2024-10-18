@@ -40,7 +40,7 @@ implements ManagedWaterloggable{
 		setDefaultState(st);
 	}
 	@Override public ItemStack
-	getPickStack(net.minecraft.world.BlockView v,BlockPos p,BlockState st){
+	getPickStack(net.minecraft.world.WorldView v,BlockPos p,BlockState st){
 		byte s1=0;byte s2=0;switch(st.get(NORTHWEST).intValue()){
 			case 1:s1++;break;
 			case 2:s2++;break;
