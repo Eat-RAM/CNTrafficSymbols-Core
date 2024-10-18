@@ -130,7 +130,7 @@ implements ManagedWaterloggable{
 		return(ctx.getStack().isOf(itm1)||ctx.getStack().isOf(itm2))&&
 		readyToReplace(st,ctx)!=null;
 	}
-	@Nullable public static IntProperty
+	public@Nullable static IntProperty
 	readyToReplace(@Nullable BlockState st,ItemPlacementContext ctx){
 		int nw=(st!=null)?st.get(NORTHWEST).intValue():0;
 		int ne=(st!=null)?st.get(NORTHEAST).intValue():0;
@@ -218,15 +218,15 @@ implements ManagedWaterloggable{
 		return(getWaterloggedProperty()&&st.get(WATERLOGGED).booleanValue())?
 		WATER.getStill(false):super.getFluidState(st);
 	}
-	@Nullable public Item setItm0(@Nullable Item v){
+	public@Nullable Item setItm0(@Nullable Item v){
 		Item r=itm0;if(r==null)itm0=v;
 		return v;
 	}
-	@Nullable public Item setItm1(@Nullable Item v){
+	public@Nullable Item setItm1(@Nullable Item v){
 		Item r=itm1;if(r==null)itm1=v;
 		return v;
 	}
-	@Nullable public Item setItm2(@Nullable Item v){
+	public@Nullable Item setItm2(@Nullable Item v){
 		Item r=itm2;if(r==null)itm2=v;
 		return v;
 	}
