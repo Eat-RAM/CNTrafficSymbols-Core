@@ -137,10 +137,11 @@ implements ManagedWaterloggable{
 		int sw=(st!=null)?st.get(SOUTHWEST).intValue():0;
 		int se=(st!=null)?st.get(SOUTHEAST).intValue():0;
 		if(st!=null&&nw==0&&ne==0&&sw==0&&se==0)return null;
+		double rx=ctx.getHitPos().x-ctx.getBlockPos().getX();
+		double rz=ctx.getHitPos().z-ctx.getBlockPos().getZ();
 		switch(ctx.getSide()){
 			case DOWN:case UP:{
-				double rx=ctx.getHitPos().x-ctx.getBlockPos().getX();
-				double rz=ctx.getHitPos().z-ctx.getBlockPos().getZ();if(rx<.5){
+				if(rx<.5){
 					if(rz<.5)return(nw==0)?NORTHWEST:null;
 					return(sw==0)?SOUTHWEST:null;
 				}
@@ -148,7 +149,8 @@ implements ManagedWaterloggable{
 				return(se==0)?SOUTHEAST:null;
 			}
 			case NORTH:{
-				double rx=ctx.getHitPos().x-ctx.getBlockPos().getX();if(rx<.5){
+				if(rx<.5){
+					if(rz<.4375)return null;
 					if(sw==0)return SOUTHWEST;
 					return(nw==0)?NORTHWEST:null;
 				}
@@ -156,15 +158,17 @@ implements ManagedWaterloggable{
 				return(ne==0)?NORTHEAST:null;
 			}
 			case SOUTH:{
-				double rx=ctx.getHitPos().x-ctx.getBlockPos().getX();if(rx<.5){
+				if(rx<.5){
 					if(nw==0)return NORTHWEST;
 					return(sw==0)?SOUTHWEST:null;
 				}
+				if(rz>.5625)return null;
 				if(ne==0)return NORTHEAST;
 				return(se==0)?SOUTHEAST:null;
 			}
 			case WEST:{
-				double rz=ctx.getHitPos().z-ctx.getBlockPos().getZ();if(rz<.5){
+				if(rz<.5){
+					if(rx<.4375)return null;
 					if(ne==0)return NORTHEAST;
 					return(nw==0)?NORTHWEST:null;
 				}
@@ -172,10 +176,11 @@ implements ManagedWaterloggable{
 				return(sw==0)?SOUTHWEST:null;
 			}
 			case EAST:{
-				double rz=ctx.getHitPos().z-ctx.getBlockPos().getZ();if(rz<.5){
+				if(rz<.5){
 					if(nw==0)return NORTHWEST;
 					return(ne==0)?NORTHEAST:null;
 				}
+				if(rx>.5625)return null;
 				if(sw==0)return SOUTHWEST;
 				return(se==0)?SOUTHEAST:null;
 			}
