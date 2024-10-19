@@ -1,7 +1,7 @@
 package rege.pegui.cntrafficsymbols.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.entity.player.PlayerEntity;import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
@@ -65,5 +65,11 @@ implements ManagedWaterloggable{
 	}
 	@Override public boolean canReplace(BlockState st,ItemPlacementContext ctx){
 		return st.get(DoubleFaceFacing.FACING).id<16&&ctx.getStack().isOf(asItem());
+	}
+	@Override public float calcBlockBreakingDelta(BlockState st,PlayerEntity pl,
+	BlockView v,BlockPos p){
+		return st.get(DoubleFaceFacing.FACING).isSingle()?super
+		.calcBlockBreakingDelta(st,pl,v,p):(super.calcBlockBreakingDelta(st,pl,v,p)/
+		1.5625f);
 	}
 }
