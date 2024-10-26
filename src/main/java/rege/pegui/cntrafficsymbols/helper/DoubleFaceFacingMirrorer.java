@@ -1,6 +1,6 @@
 package rege.pegui.cntrafficsymbols.helper;
 import rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing;
-public class DoubleFaceFacingMirrorer{
+public abstract class DoubleFaceFacingMirrorer{
 	private DoubleFaceFacingMirrorer(){throw new UnsupportedOperationException();}
 	public static DoubleFaceFacing mirrorX(DoubleFaceFacing v){
 		if(v.isWall())return(v.id==25||v.id==27)?DoubleFaceFacing.byID(52-v.id):v;

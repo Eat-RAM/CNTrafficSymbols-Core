@@ -1,6 +1,6 @@
 package rege.pegui.cntrafficsymbols.helper;
 import rege.pegui.cntrafficsymbols.struct.DoubleFaceFacing90;
-public class DoubleFaceFacing90Mirrorer{
+public abstract class DoubleFaceFacing90Mirrorer{
 	private
 	DoubleFaceFacing90Mirrorer(){throw new UnsupportedOperationException();}
 	public static DoubleFaceFacing90 mirrorX(DoubleFaceFacing90 v){

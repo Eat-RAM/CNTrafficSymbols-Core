@@ -1,5 +1,5 @@
 package rege.pegui.cntrafficsymbols.helper;
-public class RangeUtil{
+public abstract class RangeUtil{
 	private RangeUtil(){throw new UnsupportedOperationException();}
 	public static@org.jetbrains.annotations.Range(from=-1,to=1)byte
 	closedRangeTo(double start,double end,
