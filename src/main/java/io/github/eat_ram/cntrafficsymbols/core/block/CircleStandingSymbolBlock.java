@@ -13,8 +13,8 @@ import static net.minecraft.util.shape.VoxelShapes.union;
 
 public class CircleStandingSymbolBlock
     extends Attachment3DoubleFaceFacingBlock {
-    public CircleStandingSymbolBlock(Settings s) {
-        super(s);
+    public CircleStandingSymbolBlock(Settings settings) {
+        super(settings);
     }
 
     public static final VoxelShape SHAPE0 = cuboid(

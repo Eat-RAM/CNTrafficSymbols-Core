@@ -22,8 +22,8 @@ import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class DoubleFaceFacingBlock extends Block
     implements ManagedWaterloggable {
-    public DoubleFaceFacingBlock(Settings s) {
-        super(s);
+    public DoubleFaceFacingBlock(Settings settings) {
+        super(settings);
         BlockState st = this.getDefaultState().with(
             DoubleFaceFacing.FACING, DoubleFaceFacing.SOUTH
         );
