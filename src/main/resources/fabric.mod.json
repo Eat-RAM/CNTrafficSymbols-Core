@@ -1,30 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "cntrafficsymbols",
+  "id": "cntrafficsymbols_core",
   "version": "0.0.2-b2",
-  "name": "CNTrafficSymbols",
-  "description": "A mod contains CN traffic symbols(signs, patterns, etc.)",
+  "name": "CNTrafficSymbols Core",
+  "description": "Core module of CNTrafficSymbols",
   "authors": [
-    "REGEdt32",
-    "Manarein",
-    "morrison2077",
-    "azaz-az",
-    "EarthHaoduo"
+    {
+      "name": "REGE",
+      "contact": {"homepage": "https://github.com/IAmREGE"}
+    }
   ],
-  "contact": {},
-  "license": "GPL-v2",
-  "icon": "assets/regedt32/textures/icon/cntrafficsymbols.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": ["rege.pegui.cntrafficsymbols.Main"],
-    "client": ["rege.pegui.cntrafficsymbols.MainClient"]
+  "contact": {
+    "homepage": "https://github.com/Eat-RAM/CNTrafficSymbols-Core",
+    "issues": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/issues",
+    "sources": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/tree/1.20.4"
   },
-  "mixins": ["cntrafficsymbols.mixins.json"],
+  "license": "GPL-v2-or-later",
+  "icon": "assets/cntrafficsymbols_core/textures/icon.png",
+  "environment": "*",
+  "mixins": ["cntrafficsymbols_core.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.0",
-    "minecraft": "1.21.x",
-    "java": ">=16",
+    "minecraft": "1.20.4",
+    "java": ">=17",
     "fabric-api": "*"
-  },
-  "suggests": {"numberidrevival": "0.0.1-a1"}
+  }
 }
