@@ -2,13 +2,13 @@ package io.github.eat_ram.cntrafficsymbols.core.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import io.github.eat_ram.cntrafficsymbols.core.struct.Attachment3;
 import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.RotationPropertyHelper;
 
+import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock {
@@ -53,7 +53,7 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock {
         if (this.getWaterloggedProperty()) {
             sst = sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
                 ctx.getBlockPos()
-            ).getFluid() == Fluids.WATER);
+            ).getFluid() == WATER);
         }
         return sst;
     }

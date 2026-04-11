@@ -1,8 +1,10 @@
 package io.github.eat_ram.cntrafficsymbols.core.helper;
 
 import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing90;
+import org.jetbrains.annotations.Contract;
 
 public abstract class DoubleFaceFacing90Mirrorer {
+    @Contract("-> fail")
     private DoubleFaceFacing90Mirrorer() {
         throw new UnsupportedOperationException();
     }

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
 public abstract class RangeUtil {
+    @Contract("-> fail")
     private RangeUtil() {
         throw new UnsupportedOperationException();
     }

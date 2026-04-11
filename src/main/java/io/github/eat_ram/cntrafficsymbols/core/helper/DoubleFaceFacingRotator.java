@@ -1,8 +1,10 @@
 package io.github.eat_ram.cntrafficsymbols.core.helper;
 
 import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
+import org.jetbrains.annotations.Contract;
 
 public abstract class DoubleFaceFacingRotator {
+    @Contract("-> fail")
     private DoubleFaceFacingRotator() {
         throw new UnsupportedOperationException();
     }

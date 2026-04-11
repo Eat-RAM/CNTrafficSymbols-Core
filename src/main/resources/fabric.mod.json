@@ -15,14 +15,13 @@
     "issues": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/issues",
     "sources": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/tree/1.20.4"
   },
-  "license": "GPL-v2-or-later",
+  "license": "GPL-2.0-or-later",
   "icon": "assets/cntrafficsymbols_core/textures/icon.png",
   "environment": "*",
   "mixins": ["cntrafficsymbols_core.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.0",
     "minecraft": "1.20.4",
-    "java": ">=17",
-    "fabric-api": "*"
+    "java": ">=17"
   }
 }
