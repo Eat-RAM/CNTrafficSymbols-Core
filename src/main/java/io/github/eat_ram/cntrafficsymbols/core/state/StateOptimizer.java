@@ -29,7 +29,7 @@ public abstract class StateOptimizer {
         }
         for (State<?, ?> i : recordList.get(owner).keySet()) {
             if (i.getEntries().equals(ppts)) {
-                return (State<O, ?>) i;
+                return (State<O, ?>)i;
             }
         }
         return null;

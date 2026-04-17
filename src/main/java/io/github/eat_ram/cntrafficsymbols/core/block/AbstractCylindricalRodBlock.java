@@ -258,23 +258,23 @@ extends Block implements ManagedWaterloggable {
         )
     );
     public static final VoxelShape Z_CENTER =
-        createOffsetShape(Z_CENTER_BASE, 0, 0, 0);
+    createOffsetShape(Z_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape Z_UPPER =
-        createOffsetShape(Z_CENTER_BASE, 0, .375, 0);
+    createOffsetShape(Z_CENTER_BASE, 0, .375, 0);
     public static final VoxelShape Z_UPPEREAST =
-        createOffsetShape(Z_CENTER_BASE, .375, .375, 0);
+    createOffsetShape(Z_CENTER_BASE, .375, .375, 0);
     public static final VoxelShape Z_EAST =
-        createOffsetShape(Z_CENTER_BASE, .375, 0, 0);
+    createOffsetShape(Z_CENTER_BASE, .375, 0, 0);
     public static final VoxelShape Z_LOWEREAST =
-        createOffsetShape(Z_CENTER_BASE, .375, -.375, 0);
+    createOffsetShape(Z_CENTER_BASE, .375, -.375, 0);
     public static final VoxelShape Z_LOWER =
-        createOffsetShape(Z_CENTER_BASE, 0, -.375, 0);
+    createOffsetShape(Z_CENTER_BASE, 0, -.375, 0);
     public static final VoxelShape Z_LOWERWEST =
-        createOffsetShape(Z_CENTER_BASE, -.375, -.375, 0);
+    createOffsetShape(Z_CENTER_BASE, -.375, -.375, 0);
     public static final VoxelShape Z_WEST =
-        createOffsetShape(Z_CENTER_BASE, -.375, 0, 0);
+    createOffsetShape(Z_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape Z_UPPERWEST =
-        createOffsetShape(Z_CENTER_BASE, -.375, .375, 0);
+    createOffsetShape(Z_CENTER_BASE, -.375, .375, 0);
     public static final List<Entry<
         Triple<Double, Double, Double>, Triple<Double, Double, Double>
     >> INTERSECT_CENTER_BASE = List.of(
