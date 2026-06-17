@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "cntrafficsymbols_core",
+  "version": "0.0.2-b2",
+  "name": "CNTrafficSymbols Core",
+  "description": "Core module of CNTrafficSymbols",
+  "authors": [
+    {
+      "name": "REGE",
+      "contact": {"homepage": "https://github.com/IAmREGE"}
+    }
+  ],
+  "contact": {
+    "homepage": "https://github.com/Eat-RAM/CNTrafficSymbols-Core",
+    "issues": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/issues",
+    "sources": "https://github.com/Eat-RAM/CNTrafficSymbols-Core/tree/latest-mc"
+  },
+  "license": "GPL-2.0-or-later",
+  "icon": "assets/cntrafficsymbols_core/textures/icon.png",
+  "environment": "*",
+  "mixins": ["cntrafficsymbols_core.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "26.2",
+    "java": ">=25"
+  }
+}
