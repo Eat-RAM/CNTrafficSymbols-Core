@@ -8,6 +8,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
@@ -131,7 +132,7 @@ implements ManagedWaterloggable {
 
     @Override
     public void afterBreak(
-        World world, PlayerEntity player, BlockPos pos,
+        ServerWorld world, ServerPlayerEntity player, BlockPos pos,
         BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool
     ) {
         super.afterBreak(world, player, pos, state, blockEntity, tool);

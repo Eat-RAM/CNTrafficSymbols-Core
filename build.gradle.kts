@@ -36,7 +36,7 @@ loom {
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
+    minecraft("com.mojang:minecraft:${project.property("mc_version")}")
     mappings("org.relativitymc:modern-yarn:${project.property("yarn_mappings")}:v2")
     modImplementation(
         "net.fabricmc:fabric-loader:${project.property("loader_version")}"
