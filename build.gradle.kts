@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
+    id("net.fabricmc.fabric-loom-remap") version "1.18-SNAPSHOT"
     id("maven-publish")
 }
 
@@ -17,11 +17,16 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
     maven("https://repo.codemc.io/repository/relativitymc/")
+    maven("https://maven.fallenbreath.me/releases")
+    maven("https://masa.dy.fi/maven/sakura-ryoko") {
+        name = "masa"
+    }
+    maven("https://maven.enginehub.org/repo/")
 }
 
 loom {
     useIntermediateMappings = true
-    intermediaryUrl = "https://repo.codemc.io/repository/relativitymc/org/relativitymc/intermediary/%1\$s/intermediary-%1\$s-v2.jar"
+    intermediaryUrl = $$"https://repo.codemc.io/repository/relativitymc/org/relativitymc/intermediary/%1$s/intermediary-%1$s-v2.jar"
 
     splitEnvironmentSourceSets()
 
@@ -31,13 +36,14 @@ loom {
             sourceSet(sourceSets.named("client").get())
         }
     }
-
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("mc_version")}")
-    mappings("org.relativitymc:modern-yarn:${project.property("yarn_mappings")}:v2")
+    mappings(
+        "org.relativitymc:modern-yarn:${project.property("yarn_mappings")}:v2"
+    )
     modImplementation(
         "net.fabricmc:fabric-loader:${project.property("loader_version")}"
     )
@@ -52,6 +58,10 @@ dependencies {
     //modImplementation(files("nbtutils-0.0.1a1.jar"))
     //modImplementation(files("nbtutils_bridge_mc-0.0.1-a1.jar"))
     //modImplementation(files("number_id_revival-0.0.1-a1.jar"))
+    compileOnly("me.fallenbreath:conditional-mixin-fabric:0.6.4")
+    include("me.fallenbreath:conditional-mixin-fabric:0.6.4")
+    modCompileOnly("fi.dy.masa.litematica:litematica-fabric-26.3:0.29.0")
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.4.6-SNAPSHOT")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -70,9 +80,13 @@ java {
 
 tasks.jar {
     from("LICENSE") {
-        rename {
-            "${it}_${base.archivesName.get()}"
-        }
+        into("META-INF")
+    }
+}
+
+tasks.named<Jar>("sourcesJar") {
+    from("LICENSE") {
+        into("META-INF")
     }
 }
 

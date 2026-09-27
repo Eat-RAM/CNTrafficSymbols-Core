@@ -11,6 +11,7 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing90;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -23,12 +24,14 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 
-public class WideBoardBlock extends Block implements ManagedWaterloggable {
+public class WideBoardBlock extends Block
+implements ManagedWaterloggable, CountedItemComposed {
     public static final VoxelShape SHAPE0 = cuboid(0, 0, .5, 1, 1, .5625);
     public static final VoxelShape SHAPE1 = cuboid(.4375, 0, 0, .5, 1, 1);
     public static final VoxelShape SHAPE2 = cuboid(0, 0, .4375, 1, 1, .5);
@@ -190,7 +193,7 @@ public class WideBoardBlock extends Block implements ManagedWaterloggable {
             )
         );
         if (this.getWaterloggedProperty()) {
-            sst = sst.with(WATERLOGGED, state.get(WATERLOGGED));
+            sst = sst.withIfExists(WATERLOGGED, state.get(WATERLOGGED));
         }
         return sst;
     }
@@ -216,5 +219,11 @@ public class WideBoardBlock extends Block implements ManagedWaterloggable {
         return (this.getWaterloggedProperty() &&
                 state.get(WATERLOGGED).booleanValue()) ?
                WATER.getStill(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public int
+    getComposedItemCount(BlockState state, @Nullable BlockEntity be) {
+        return state.get(DoubleFaceFacing90.FACING).isSingle() ? 1 : 2;
     }
 }

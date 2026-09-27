@@ -9,12 +9,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
 public interface ManagedWaterloggable extends Waterloggable {
     @Override
     public default boolean canFillWithFluid(
-        LivingEntity filler, BlockView view, BlockPos pos, BlockState state,
-        Fluid fluid
+        @Nullable LivingEntity filler, BlockView view, BlockPos pos,
+        BlockState state, Fluid fluid
     ) {
         return this.getWaterloggedProperty() &&
                Waterloggable.super.canFillWithFluid(
@@ -35,7 +36,8 @@ public interface ManagedWaterloggable extends Waterloggable {
 
     @Override
     public default ItemStack tryDrainFluid(
-        LivingEntity drainer, WorldAccess world, BlockPos pos, BlockState state
+        @Nullable LivingEntity drainer, WorldAccess world, BlockPos pos,
+        BlockState state
     ) {
         return this.getWaterloggedProperty() ?
                Waterloggable.super.tryDrainFluid(drainer, world, pos, state) :
