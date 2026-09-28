@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols_core",
-  "version": "0.0.2-b2",
+  "version": "0.0.2-rc2",
   "name": "CNTrafficSymbols Core",
   "description": "Core module of CNTrafficSymbols",
   "authors": [
@@ -18,7 +18,14 @@
   "license": "GPL-2.0-or-later",
   "icon": "assets/cntrafficsymbols_core/textures/icon.png",
   "environment": "*",
-  "mixins": ["cntrafficsymbols_core.mixins.json"],
+  "mixins": [
+    "cntrafficsymbols_core.mixins.json",
+    "cntrafficsymbols_core-worldedit.mixins.json",
+    {
+      "config": "cntrafficsymbols_core-litematica.mixins.json",
+      "environment": "client"
+    }
+  ],
   "depends": {
     "fabricloader": ">=0.14.0",
     "minecraft": "1.20.4",

@@ -1,7 +1,11 @@
 package io.github.eat_ram.cntrafficsymbols.core.block;
 
+import io.github.eat_ram.cntrafficsymbols.core.helper.DoubleFaceFacingMirrorer;
+import io.github.eat_ram.cntrafficsymbols.core.helper.DoubleFaceFacingRotator;
+import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
@@ -12,16 +16,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationPropertyHelper;
 import net.minecraft.world.BlockView;
-import io.github.eat_ram.cntrafficsymbols.core.helper.DoubleFaceFacingMirrorer;
-import io.github.eat_ram.cntrafficsymbols.core.helper.DoubleFaceFacingRotator;
-import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class DoubleFaceFacingBlock extends Block
-    implements ManagedWaterloggable {
+implements ManagedWaterloggable, CountedItemComposed {
     public DoubleFaceFacingBlock(Settings settings) {
         super(settings);
         BlockState st = this.getDefaultState().with(
@@ -131,5 +133,11 @@ public class DoubleFaceFacingBlock extends Block
                (super.calcBlockBreakingDelta(
                    state, player, view, pos
                ) / 1.5625f);
+    }
+
+    @Override
+    public int
+    getComposedItemCount(BlockState state, @Nullable BlockEntity be) {
+        return state.get(DoubleFaceFacing.FACING).isSingle() ? 1 : 2;
     }
 }

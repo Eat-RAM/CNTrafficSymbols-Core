@@ -16,6 +16,18 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+    maven("https://maven.fallenbreath.me/releases")
+    exclusiveContent {
+        forRepository {
+            maven("https://api.modrinth.com/maven") {
+                name = "Modrinth"
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+    maven("https://maven.enginehub.org/repo/")
 }
 
 loom {
@@ -27,7 +39,6 @@ loom {
             sourceSet(sourceSets.named("client").get())
         }
     }
-
 }
 
 dependencies {
@@ -48,6 +59,10 @@ dependencies {
     //modImplementation(files("nbtutils-0.0.1a1.jar"))
     //modImplementation(files("nbtutils_bridge_mc-0.0.1-a1.jar"))
     //modImplementation(files("number_id_revival-0.0.1-a1.jar"))
+    compileOnly("me.fallenbreath:conditional-mixin-fabric:0.6.4")
+    include("me.fallenbreath:conditional-mixin-fabric:0.6.4")
+    modCompileOnly("maven.modrinth:bEpr0Arc:RfB4COWa") // Litematica
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -66,9 +81,13 @@ java {
 
 tasks.jar {
     from("LICENSE") {
-        rename {
-            "${it}_${base.archivesName.get()}"
-        }
+        into("META-INF")
+    }
+}
+
+tasks.named<Jar>("sourcesJar") {
+    from("LICENSE") {
+        into("META-INF")
     }
 }
 

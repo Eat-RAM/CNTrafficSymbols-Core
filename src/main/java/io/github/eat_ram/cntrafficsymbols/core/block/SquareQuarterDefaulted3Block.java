@@ -1,5 +1,8 @@
 package io.github.eat_ram.cntrafficsymbols.core.block;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,13 +22,14 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 
 public class SquareQuarterDefaulted3Block extends Block
-implements ManagedWaterloggable {
+implements ManagedWaterloggable, MultiItemComposed {
     public static final IntProperty NORTHWEST =
     IntProperty.of("northwest", 0, 2);
     public static final IntProperty NORTHEAST =
@@ -136,60 +140,10 @@ implements ManagedWaterloggable {
         if ((world instanceof ServerWorld) && this.shouldHardcodedDrop(
             world, player, pos, state, blockEntity, tool
         )) {
-            byte s1 = 0;
-            byte s2 = 0;
-            switch (state.get(NORTHWEST).intValue()) {
-                case 1:
-                    s1++;
-                    break;
-                case 2:
-                    s2++;
-                    break;
-            }
-            switch (state.get(NORTHEAST).intValue()) {
-                case 1:
-                    s1++;
-                    break;
-                case 2:
-                    s2++;
-                    break;
-            }
-            switch (state.get(SOUTHWEST).intValue()) {
-                case 1:
-                    s1++;
-                    break;
-                case 2:
-                    s2++;
-                    break;
-            }
-            switch (state.get(SOUTHEAST).intValue()) {
-                case 1:
-                    s1++;
-                    break;
-                case 2:
-                    s2++;
-                    break;
-            }
-            if (s1 == (byte)0 && s2 == (byte)0) {
-                if (this.itm0 != null) {
-                    ItemScatterer.spawn(
-                        world, pos.getX(), pos.getY(), pos.getZ(),
-                        new ItemStack(this.itm0)
-                    );
-                }
-            } else {
-                if (this.itm1 != null) {
-                    ItemScatterer.spawn(
-                        world, pos.getX(), pos.getY(), pos.getZ(),
-                        new ItemStack(this.itm1, s1)
-                    );
-                }
-                if (this.itm2 != null) {
-                    ItemScatterer.spawn(
-                        world, pos.getX(), pos.getY(), pos.getZ(),
-                        new ItemStack(this.itm2, s2)
-                    );
-                }
+            for (ItemStack i : this.getComposedItems(state, blockEntity)) {
+                ItemScatterer.spawn(
+                    world, pos.getX(), pos.getY(), pos.getZ(), i
+                );
             }
         }
     }
@@ -412,5 +366,55 @@ implements ManagedWaterloggable {
             this.itm2 = v;
         }
         return v;
+    }
+
+    @Override
+    public @NotNull Iterable<@NotNull ItemStack>
+    getComposedItems(BlockState state, @Nullable BlockEntity be) {
+        byte s1 = 0;
+        byte s2 = 0;
+        switch (state.get(NORTHWEST).intValue()) {
+            case 1:
+                s1++;
+                break;
+            case 2:
+                s2++;
+                break;
+        }
+        switch (state.get(NORTHEAST).intValue()) {
+            case 1:
+                s1++;
+                break;
+            case 2:
+                s2++;
+                break;
+        }
+        switch (state.get(SOUTHWEST).intValue()) {
+            case 1:
+                s1++;
+                break;
+            case 2:
+                s2++;
+                break;
+        }
+        switch (state.get(SOUTHEAST).intValue()) {
+            case 1:
+                s1++;
+                break;
+            case 2:
+                s2++;
+                break;
+        }
+        if (s1 == (byte)0 && s2 == (byte)0 && this.itm0 != null) {
+            return Collections.singletonList(new ItemStack(this.itm0));
+        }
+        if (s1 != 0 && this.itm1 != null) {
+            return (s2 != 0 && this.itm2 != null) ? Arrays.asList(
+                new ItemStack(this.itm1, s1), new ItemStack(this.itm2, s2)
+            ) : Collections.singletonList(new ItemStack(this.itm1, s1));
+        }
+        return (this.itm2 != null) ? Collections.singletonList(
+            new ItemStack(this.itm2, s2)
+        ) : Collections.emptyList();
     }
 }

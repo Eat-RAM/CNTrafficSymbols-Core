@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.WorldAccess;
-
 import org.apache.commons.lang3.tuple.Triple;
 
 import static net.minecraft.fluid.Fluids.WATER;

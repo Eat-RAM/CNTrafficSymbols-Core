@@ -1,10 +1,10 @@
 package io.github.eat_ram.cntrafficsymbols.core.block;
 
+import io.github.eat_ram.cntrafficsymbols.core.struct.Attachment3;
+import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
-import io.github.eat_ram.cntrafficsymbols.core.struct.Attachment3;
-import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.RotationPropertyHelper;
 
