@@ -3,6 +3,7 @@ package io.github.eat_ram.cntrafficsymbols.core.compat.litematica.mixin;
 import java.util.Iterator;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,8 +18,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
+@Pseudo
 @Restriction(require = @Condition("litematica"))
-@Mixin(fi.dy.masa.litematica.materials.MaterialCache.class)
+@Mixin(targets = "fi.dy.masa.litematica.materials.MaterialCache")
 public abstract class MaterialCacheMixin {
     @ModifyReturnValue(method = "requiresMultipleItems", at = @At("RETURN"))
     private boolean addEntries(boolean original, BlockState state) {

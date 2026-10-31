@@ -4,11 +4,6 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.AxisPosition9;
 import org.jetbrains.annotations.Contract;
 
 public abstract class AxisPosition9Mirrorer {
-    @Contract("-> fail")
-    private AxisPosition9Mirrorer() {
-        throw new UnsupportedOperationException();
-    }
-
     public static AxisPosition9 mirrorX(AxisPosition9 v) {
         switch (v.id / 9) {
             case 1: return v.id < 11 ? v : AxisPosition9.byID(28 - v.id);
@@ -31,5 +26,10 @@ public abstract class AxisPosition9Mirrorer {
                 }
             default: return v;
         }
+    }
+
+    @Contract(value = "-> fail", pure = true)
+    private AxisPosition9Mirrorer() {
+        throw new UnsupportedOperationException("Utility class");
     }
 }

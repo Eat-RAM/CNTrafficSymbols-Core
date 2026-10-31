@@ -6,32 +6,25 @@ import java.util.Collections;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockMirror;
 import net.minecraft.util.math.BlockRotation;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
-
 public class SquareQuarterDefaulted3Block extends Block
-implements ManagedWaterloggable, MultiItemComposed {
+implements FluidloggedConfigurable, MultiItemComposed {
     public static final IntProperty NORTHWEST =
     IntProperty.of("northwest", 0, 2);
     public static final IntProperty NORTHEAST =
@@ -54,9 +47,6 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState st = this.getDefaultState().with(NORTHWEST, 0)
                         .with(NORTHEAST, 0).with(SOUTHWEST, 0)
                         .with(SOUTHEAST, 0);
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
@@ -65,9 +55,6 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState st = this.getDefaultState().with(NORTHWEST, 0)
                         .with(NORTHEAST, 0).with(SOUTHWEST, 0)
                         .with(SOUTHEAST, 0);
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
@@ -122,33 +109,6 @@ implements ManagedWaterloggable, MultiItemComposed {
     protected void
     appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST);
-        if (this.getWaterloggedProperty()) {
-            builder.add(WATERLOGGED);
-        }
-    }
-
-    public boolean shouldHardcodedDrop(
-        World world, PlayerEntity player, BlockPos pos, BlockState state,
-        @Nullable BlockEntity blockEntity, ItemStack tool
-    ) {
-        return true;
-    }
-
-    @Override
-    public void afterBreak(
-        ServerWorld world, ServerPlayerEntity player, BlockPos pos,
-        BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool
-    ) {
-        super.afterBreak(world, player, pos, state, blockEntity, tool);
-        if ((world instanceof ServerWorld) && this.shouldHardcodedDrop(
-            world, player, pos, state, blockEntity, tool
-        )) {
-            for (ItemStack i : this.getComposedItems(state, blockEntity)) {
-                ItemScatterer.spawn(
-                    world, pos.getX(), pos.getY(), pos.getZ(), i
-                );
-            }
-        }
     }
 
     @Override
@@ -166,14 +126,7 @@ implements ManagedWaterloggable, MultiItemComposed {
             return st.with(readyToReplace(st, ctx), (int) repl);
         }
         if (ctx.getStack().is(this.itm0)) {
-            if (this.getWaterloggedProperty()) {
-                return this.getDefaultState().with(
-                    WATERLOGGED, ctx.getWorld().getFluidState(
-                        ctx.getBlockPos()
-                    ).getFluid() == WATER
-                );
-            }
-            return this.getDefaultState();
+            return this.configurePlacedFluid(this.getDefaultState(), ctx);
         }
         byte repl = 1;
         if (ctx.getStack().is(this.itm2)) {
@@ -186,12 +139,7 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState sst = this.getDefaultState().with(
             readyToReplace(null, ctx), (int)repl
         );
-        if (this.getWaterloggedProperty()) {
-            return sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
-                ctx.getBlockPos()
-            ).getFluid() == WATER);
-        }
-        return sst;
+        return this.configurePlacedFluid(sst, ctx);
     }
 
     @Override
@@ -332,21 +280,15 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockPos pos, Direction direction, BlockPos neighborPos,
         BlockState neighborState, Random random
     ) {
-        if (this.getWaterloggedProperty() &&
-            state.get(WATERLOGGED).booleanValue()) {
-            tickView.scheduleFluidTick(pos, WATER, WATER.getTickRate(world));
+        FluidState fs = state.getFluidState();
+        if (!fs.isEmpty()) {
+            Fluid fluid = fs.getFluid();
+            tickView.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(
             state, world, tickView, pos, direction, neighborPos, neighborState,
             random
         );
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return (this.getWaterloggedProperty() &&
-                state.get(WATERLOGGED).booleanValue()) ?
-               WATER.getStill(false) : super.getFluidState(state);
     }
 
     public @Nullable Item setItm0(@Nullable Item v) {

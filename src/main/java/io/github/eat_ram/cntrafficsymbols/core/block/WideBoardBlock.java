@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -26,12 +27,10 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 
 public class WideBoardBlock extends Block
-implements ManagedWaterloggable, CountedItemComposed {
+implements CountedItemComposed, FluidloggedConfigurable {
     public static final VoxelShape SHAPE0 = cuboid(0, 0, .5, 1, 1, .5625);
     public static final VoxelShape SHAPE1 = cuboid(.4375, 0, 0, .5, 1, 1);
     public static final VoxelShape SHAPE2 = cuboid(0, 0, .4375, 1, 1, .5);
@@ -50,9 +49,6 @@ implements ManagedWaterloggable, CountedItemComposed {
         BlockState st = this.getDefaultState().with(DoubleFaceFacing90.FACING,
                                                     DoubleFaceFacing90.SOUTH);
         this.arr = new ArrayList<>();
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
@@ -61,9 +57,6 @@ implements ManagedWaterloggable, CountedItemComposed {
         BlockState st = this.getDefaultState().with(DoubleFaceFacing90.FACING,
                                                     DoubleFaceFacing90.SOUTH);
         this.arr = cb.arr;
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
@@ -127,9 +120,6 @@ implements ManagedWaterloggable, CountedItemComposed {
     protected void
     appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(DoubleFaceFacing90.FACING);
-        if (this.getWaterloggedProperty()) {
-            builder.add(WATERLOGGED);
-        }
     }
 
     @Override
@@ -147,12 +137,7 @@ implements ManagedWaterloggable, CountedItemComposed {
                 (ctx.getSide().getHorizontalQuarterTurns() + 2) % 4 + 6
             )
         );
-        if (this.getWaterloggedProperty()) {
-            sst = sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
-                ctx.getBlockPos()
-            ).getFluid() == WATER);
-        }
-        return sst;
+        return this.configurePlacedFluid(sst, ctx);
     }
 
     @Override
@@ -192,10 +177,7 @@ implements ManagedWaterloggable, CountedItemComposed {
                 state.get(DoubleFaceFacing90.FACING)
             )
         );
-        if (this.getWaterloggedProperty()) {
-            sst = sst.withIfExists(WATERLOGGED, state.get(WATERLOGGED));
-        }
-        return sst;
+        return this.configureCopiedFluid(state, sst);
     }
 
     @Override
@@ -204,21 +186,15 @@ implements ManagedWaterloggable, CountedItemComposed {
         BlockPos pos, Direction direction, BlockPos neighborPos,
         BlockState neighborState, Random random
     ) {
-        if (this.getWaterloggedProperty() &&
-            state.get(WATERLOGGED).booleanValue()) {
-            tickView.scheduleFluidTick(pos, WATER, WATER.getTickRate(world));
+        FluidState fs = state.getFluidState();
+        if (!fs.isEmpty()) {
+            Fluid fluid = fs.getFluid();
+            tickView.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(
             state, world, tickView, pos, direction, neighborPos, neighborState,
             random
         );
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return (this.getWaterloggedProperty() &&
-                state.get(WATERLOGGED).booleanValue()) ?
-               WATER.getStill(false) : super.getFluidState(state);
     }
 
     @Override

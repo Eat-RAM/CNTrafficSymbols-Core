@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols_core",
-  "version": "0.0.2-rc2",
+  "version": "0.0.3-a1",
   "name": "CNTrafficSymbols Core",
   "description": "Core module of CNTrafficSymbols",
   "authors": [

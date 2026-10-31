@@ -11,6 +11,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(since = "0.0.3-a1", forRemoval = true)
 public interface ManagedWaterloggable extends Waterloggable {
     @Override
     public default boolean canFillWithFluid(

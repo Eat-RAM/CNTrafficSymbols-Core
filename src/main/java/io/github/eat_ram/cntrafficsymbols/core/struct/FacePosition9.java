@@ -2,6 +2,8 @@ package io.github.eat_ram.cntrafficsymbols.core.struct;
 
 import net.minecraft.state.property.EnumProperty;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 public enum FacePosition9 implements net.minecraft.util.StringIdentifiable {
     WEST_CENTER("west_center", 0),
@@ -59,17 +61,17 @@ public enum FacePosition9 implements net.minecraft.util.StringIdentifiable {
     SOUTH_WEST("south_west", 52),
     SOUTH_UPPERWEST("south_upperwest", 53);
 
-    public final String str;
-    public final int id;
+    public final @NotNull String str;
+    public final @Range(from = 0, to = 53) int id;
 
-    private FacePosition9(String n, int i) {
+    FacePosition9(@NotNull String n, @Range(from = 0, to = 53) int i) {
         this.str = n;
         this.id = i;
     }
 
     @Override
     @Contract(pure = true)
-    public String asString() {
+    public @NotNull String asString() {
         return this.str;
     }
 
@@ -88,6 +90,7 @@ public enum FacePosition9 implements net.minecraft.util.StringIdentifiable {
         SOUTH_LOWER, SOUTH_LOWERWEST, SOUTH_WEST, SOUTH_UPPERWEST
     };
 
+    @Contract(pure = true)
     public static FacePosition9 byID(int id) {
         return VARS[id];
     }

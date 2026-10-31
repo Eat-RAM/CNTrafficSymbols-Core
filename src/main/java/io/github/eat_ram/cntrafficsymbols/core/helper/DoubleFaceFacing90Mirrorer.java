@@ -4,11 +4,6 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing90;
 import org.jetbrains.annotations.Contract;
 
 public abstract class DoubleFaceFacing90Mirrorer {
-    @Contract("-> fail")
-    private DoubleFaceFacing90Mirrorer() {
-        throw new UnsupportedOperationException();
-    }
-
     public static DoubleFaceFacing90 mirrorX(DoubleFaceFacing90 v) {
         switch (v.id) {
             case 1: return DoubleFaceFacing90.EAST;
@@ -27,5 +22,10 @@ public abstract class DoubleFaceFacing90Mirrorer {
             case 8: return DoubleFaceFacing90.WALL_NORTH;
             default: return v;
         }
+    }
+
+    @Contract(value = "-> fail", pure = true)
+    private DoubleFaceFacing90Mirrorer() {
+        throw new UnsupportedOperationException("Utility class");
     }
 }

@@ -17,6 +17,7 @@ import static net.minecraft.item.Items.WATER_BUCKET;
 
 @Mixin(net.minecraft.item.BucketItem.class)
 public abstract class BucketItemMixin {
+    @SuppressWarnings("removal")
     @Inject(method = "placeFluid", at = @At("HEAD"), cancellable = true)
     private void injectPlaceFluid(
         @Nullable LivingEntity user, World world, BlockPos pos,
