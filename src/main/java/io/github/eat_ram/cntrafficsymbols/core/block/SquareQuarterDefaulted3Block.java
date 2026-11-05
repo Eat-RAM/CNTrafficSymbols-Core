@@ -62,47 +62,31 @@ implements FluidloggedConfigurable, MultiItemComposed {
     public ItemStack getPickStack(
         WorldView world, BlockPos pos, BlockState state, boolean includeData
     ) {
-        byte s1 = 0;
-        byte s2 = 0;
+        int s1 = 0;
+        int s2 = 0;
         switch (state.get(NORTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(NORTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
-        if (s1 == (byte)0) {
-            return new ItemStack((s2 == (byte)0) ? this.itm0 : this.itm2);
+        if (s1 == 0) {
+            return new ItemStack(s2 == 0 ? this.itm0 : this.itm2);
         }
-        if (s2 == (byte)0) {
+        if (s2 == 0) {
             return new ItemStack(this.itm1);
         }
-        return new ItemStack((Math.random() < .5) ? this.itm1 : this.itm2);
+        return new ItemStack(Math.random() < .5 ? this.itm1 : this.itm2);
     }
 
     @Override
@@ -115,7 +99,7 @@ implements FluidloggedConfigurable, MultiItemComposed {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState st = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (st.is(this)) {
-            byte repl = 1;
+            int repl = 1;
             if (ctx.getStack().is(this.itm2)) {
                 repl++;
             } else if (!ctx.getStack().is(this.itm1)) {
@@ -123,12 +107,12 @@ implements FluidloggedConfigurable, MultiItemComposed {
                     "Unexpected item " + ctx.getStack().getItem()
                 );
             }
-            return st.with(readyToReplace(st, ctx), (int) repl);
+            return st.with(readyToReplace(st, ctx), repl);
         }
         if (ctx.getStack().is(this.itm0)) {
             return this.configurePlacedFluid(this.getDefaultState(), ctx);
         }
-        byte repl = 1;
+        int repl = 1;
         if (ctx.getStack().is(this.itm2)) {
             repl++;
         } else if (!ctx.getStack().is(this.itm1)) {
@@ -137,7 +121,7 @@ implements FluidloggedConfigurable, MultiItemComposed {
             );
         }
         BlockState sst = this.getDefaultState().with(
-            readyToReplace(null, ctx), (int)repl
+            readyToReplace(null, ctx), repl
         );
         return this.configurePlacedFluid(sst, ctx);
     }
@@ -163,19 +147,18 @@ implements FluidloggedConfigurable, MultiItemComposed {
         double rz = ctx.getHitPos().z - ctx.getBlockPos().getZ();
         switch (ctx.getSide()) {
             case DOWN:
-            case UP: {
+            case UP:
                 if (rx < .5) {
                     if (rz < .5) {
-                        return (nw == 0) ? NORTHWEST : null;
+                        return nw == 0 ? NORTHWEST : null;
                     }
-                    return (sw == 0) ? SOUTHWEST : null;
+                    return sw == 0 ? SOUTHWEST : null;
                 }
                 if (rz < .5) {
-                    return (ne == 0) ? NORTHEAST : null;
+                    return ne == 0 ? NORTHEAST : null;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
-            case NORTH: {
+                return se == 0 ? SOUTHEAST : null;
+            case NORTH:
                 if (rx < .5) {
                     if (rz < .4375) {
                         return null;
@@ -183,19 +166,18 @@ implements FluidloggedConfigurable, MultiItemComposed {
                     if (sw == 0) {
                         return SOUTHWEST;
                     }
-                    return (nw == 0) ? NORTHWEST : null;
+                    return nw == 0 ? NORTHWEST : null;
                 }
                 if (se == 0) {
                     return SOUTHEAST;
                 }
-                return (ne == 0) ? NORTHEAST : null;
-            }
-            case SOUTH: {
+                return ne == 0 ? NORTHEAST : null;
+            case SOUTH:
                 if (rx < .5) {
                     if (nw == 0) {
                         return NORTHWEST;
                     }
-                    return (sw == 0) ? SOUTHWEST : null;
+                    return sw == 0 ? SOUTHWEST : null;
                 }
                 if (rz > .5625) {
                     return null;
@@ -203,9 +185,8 @@ implements FluidloggedConfigurable, MultiItemComposed {
                 if (ne == 0) {
                     return NORTHEAST;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
-            case WEST: {
+                return se == 0 ? SOUTHEAST : null;
+            case WEST:
                 if (rz < .5) {
                     if (rx < .4375) {
                         return null;
@@ -213,19 +194,18 @@ implements FluidloggedConfigurable, MultiItemComposed {
                     if (ne == 0) {
                         return NORTHEAST;
                     }
-                    return (nw == 0) ? NORTHWEST : null;
+                    return nw == 0 ? NORTHWEST : null;
                 }
                 if (se == 0) {
                     return SOUTHEAST;
                 }
-                return (sw == 0) ? SOUTHWEST : null;
-            }
-            case EAST: {
+                return sw == 0 ? SOUTHWEST : null;
+            case EAST:
                 if (rz < .5) {
                     if (nw == 0) {
                         return NORTHWEST;
                     }
-                    return (ne == 0) ? NORTHEAST : null;
+                    return ne == 0 ? NORTHEAST : null;
                 }
                 if (rx > .5625) {
                     return null;
@@ -233,8 +213,7 @@ implements FluidloggedConfigurable, MultiItemComposed {
                 if (sw == 0) {
                     return SOUTHWEST;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
+                return se == 0 ? SOUTHEAST : null;
             default: return null;
         }
     }
@@ -242,14 +221,16 @@ implements FluidloggedConfigurable, MultiItemComposed {
     @Override
     public BlockState rotate(BlockState st, BlockRotation rotation) {
         switch (rotation) {
-            case CLOCKWISE_90: return st.with(NORTHWEST, st.get(SOUTHWEST))
-                                        .with(NORTHEAST, st.get(NORTHWEST))
-                                        .with(SOUTHEAST, st.get(NORTHEAST))
-                                        .with(SOUTHWEST, st.get(SOUTHEAST));
-            case CLOCKWISE_180: return st.with(NORTHWEST, st.get(SOUTHEAST))
-                                         .with(NORTHEAST, st.get(SOUTHWEST))
-                                         .with(SOUTHEAST, st.get(NORTHWEST))
-                                         .with(SOUTHWEST, st.get(NORTHEAST));
+            case CLOCKWISE_90:
+                return st.with(NORTHWEST, st.get(SOUTHWEST))
+                         .with(NORTHEAST, st.get(NORTHWEST))
+                         .with(SOUTHEAST, st.get(NORTHEAST))
+                         .with(SOUTHWEST, st.get(SOUTHEAST));
+            case CLOCKWISE_180:
+                return st.with(NORTHWEST, st.get(SOUTHEAST))
+                         .with(NORTHEAST, st.get(SOUTHWEST))
+                         .with(SOUTHEAST, st.get(NORTHWEST))
+                         .with(SOUTHWEST, st.get(NORTHEAST));
             case COUNTERCLOCKWISE_90:
                 return st.with(NORTHWEST, st.get(NORTHEAST))
                          .with(NORTHEAST, st.get(SOUTHEAST))
@@ -318,41 +299,25 @@ implements FluidloggedConfigurable, MultiItemComposed {
     @Override
     public @NotNull Iterable<@NotNull ItemStack>
     getComposedItems(BlockState state, @Nullable BlockEntity be) {
-        byte s1 = 0;
-        byte s2 = 0;
+        int s1 = 0;
+        int s2 = 0;
         switch (state.get(NORTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(NORTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
-        if (s1 == (byte)0 && s2 == (byte)0 && this.itm0 != null) {
+        if (s1 == 0 && s2 == 0 && this.itm0 != null) {
             return Collections.singletonList(new ItemStack(this.itm0));
         }
         if (s1 != 0 && this.itm1 != null) {
@@ -360,7 +325,7 @@ implements FluidloggedConfigurable, MultiItemComposed {
                 new ItemStack(this.itm1, s1), new ItemStack(this.itm2, s2)
             ) : Collections.singletonList(new ItemStack(this.itm1, s1));
         }
-        return (this.itm2 != null) ? Collections.singletonList(
+        return this.itm2 != null ? Collections.singletonList(
             new ItemStack(this.itm2, s2)
         ) : Collections.emptyList();
     }

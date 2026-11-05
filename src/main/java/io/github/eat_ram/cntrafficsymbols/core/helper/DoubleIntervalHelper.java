@@ -20,13 +20,15 @@ public abstract class DoubleIntervalHelper {
     private static final Pattern INTERVAL_PATTERN = Pattern.compile(
         "\\[?\\s*([0-9]*\\.?[0-9]+)\\s*[,\\-~]\\s*([0-9]*\\.?[0-9]+)\\s*]?"
     );
+    private static final Pattern INTERVAL_DELIM =
+    Pattern.compile("^\\s*,?\\s*$");
 
     @Contract(pure = true)
     public static double clamp01(double v) {
         return v > 0. ? (v < 1. ? v : 1.) : 0.;
     }
 
-    public static @NotNull List<DoubleInterval>
+    public static @NotNull List<@NotNull DoubleInterval>
     fromLoopedMeasure(double start, double end) {
         start = clamp01(start);
         end = clamp01(end);
@@ -39,7 +41,7 @@ public abstract class DoubleIntervalHelper {
         return unionAll(list);
     }
 
-    public static @NotNull List<DoubleInterval>
+    public static @NotNull List<@NotNull DoubleInterval>
     unionAll(@Nullable Collection<DoubleInterval> intervals) {
         if (intervals == null || intervals.isEmpty()) {
             return Collections.emptyList();
@@ -102,10 +104,51 @@ public abstract class DoubleIntervalHelper {
     }
 
     @Contract("null -> null")
-    public static @Nullable List<DoubleInterval>
-    parseString(@Nullable String str) {
-        if (str == null || str.isBlank()) {
+    public static @Nullable List<@NotNull DoubleInterval>
+    fromString(@Nullable String str) {
+        if (str == null) {
             return null;
+        }
+        if (str.isBlank()) {
+            return Collections.emptyList();
+        }
+        Matcher matcher = INTERVAL_PATTERN.matcher(str);
+        List<DoubleInterval> list = new ArrayList<>();
+        int lastEnd = 0;
+        while (matcher.find()) {
+            String gap = str.substring(lastEnd, matcher.start());
+            if (lastEnd == 0) {
+                if (!gap.isBlank()) {
+                    return null;
+                }
+            } else if (!INTERVAL_DELIM.matcher(gap).matches()) {
+                return null;
+            }
+            String matchStr = matcher.group().strip();
+            if (matchStr.startsWith("[") != matchStr.endsWith("]")) {
+                return null;
+            }
+            try {
+                double s = Double.parseDouble(matcher.group(1));
+                double e = Double.parseDouble(matcher.group(2));
+                list.addAll(fromLoopedMeasure(s, e));
+            } catch (NumberFormatException ignored) {}
+            lastEnd = matcher.end();
+        }
+        if (list.isEmpty() || !str.substring(lastEnd).isBlank()) {
+            return null;
+        }
+        return unionAll(list);
+    }
+
+    @Contract("null -> null")
+    public static @Nullable List<@NotNull DoubleInterval>
+    parseString(@Nullable String str) {
+        if (str == null) {
+            return null;
+        }
+        if (str.isBlank()) {
+            return Collections.emptyList();
         }
         str = str.strip();
         Matcher matcher = INTERVAL_PATTERN.matcher(str);

@@ -1,5 +1,10 @@
 package io.github.eat_ram.cntrafficsymbols.core.block;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
 import io.github.eat_ram.cntrafficsymbols.core.struct.Attachment3;
 import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import net.minecraft.block.BlockState;
@@ -7,16 +12,16 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2d;
+import oshi.util.tuples.Quartet;
 
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 import static net.minecraft.util.shape.VoxelShapes.union;
 
 public class CircleStandingSymbolBlock
 extends Attachment3DoubleFaceFacingBlock {
-    public CircleStandingSymbolBlock(Settings settings) {
-        super(settings);
-    }
-
     public static final VoxelShape SHAPE0 = cuboid(
         .3125, .3125, .3125, .6875, .6875, .6875
     );
@@ -26,126 +31,202 @@ extends Attachment3DoubleFaceFacingBlock {
     public static final VoxelShape SHAPE2 = cuboid(
         .3125, .625, .3125, .6875, 1, .6875
     );
-    public static final VoxelShape SHAPE0N = union(
-        cuboid(.125, .40625, .9375, .875, .59375, 1),
-        cuboid(.15625, .34375, .9375, .84375, .65625, 1),
-        cuboid(.1875, .28125, .9375, .8125, .71875, 1),
-        cuboid(.21875, .25, .9375, .78125, .75, 1),
-        cuboid(.25, .21875, .9375, .75, .78125, 1),
-        cuboid(.28125, .1875, .9375, .71875, .8125, 1),
-        cuboid(.34375, .15625, .9375, .65625, .84375, 1),
-        cuboid(.40625, .125, .9375, .59375, .875, 1)
-    );
-    public static final VoxelShape SHAPE0E = union(
-        cuboid(0, .125, .40625, .0625, .875, .59375),
-        cuboid(0, .15625, .34375, .0625, .84375, .65625),
-        cuboid(0, .1875, .28125, .0625, .8125, .71875),
-        cuboid(0, .21875, .25, .0625, .78125, .75),
-        cuboid(0, .25, .21875, .0625, .75, .78125),
-        cuboid(0, .28125, .1875, .0625, .71875, .8125),
-        cuboid(0, .34375, .15625, .0625, .65625, .84375),
-        cuboid(0, .40625, .125, .0625, .59375, .875)
-    );
-    public static final VoxelShape SHAPE0S = union(
-        cuboid(.125, .40625, 0, .875, .59375, .0625),
-        cuboid(.15625, .34375, 0, .84375, .65625, .0625),
-        cuboid(.1875, .28125, 0, .8125, .71875, .0625),
-        cuboid(.21875, .25, 0, .78125, .75, .0625),
-        cuboid(.25, .21875, 0, .75, .78125, .0625),
-        cuboid(.28125, .1875, 0, .71875, .8125, .0625),
-        cuboid(.34375, .15625, 0, .65625, .84375, .0625),
-        cuboid(.40625, .125, 0, .59375, .875, .0625)
-    );
-    public static final VoxelShape SHAPE0W = union(
-        cuboid(.9375, .125, .40625, 1, .875, .59375),
-        cuboid(.9375, .15625, .34375, 1, .84375, .65625),
-        cuboid(.9375, .1875, .28125, 1, .8125, .71875),
-        cuboid(.9375, .21875, .25, 1, .78125, .75),
-        cuboid(.9375, .25, .21875, 1, .75, .78125),
-        cuboid(.9375, .28125, .1875, 1, .71875, .8125),
-        cuboid(.9375, .34375, .15625, 1, .65625, .84375),
-        cuboid(.9375, .40625, .125, 1, .59375, .875)
-    );
-    public static final VoxelShape SHAPE1N = union(
-        cuboid(.125, .28125, .9375, .875, .46875, 1),
-        cuboid(.15625, .21875, .9375, .84375, .53125, 1),
-        cuboid(.1875, .15625, .9375, .8125, .59375, 1),
-        cuboid(.21875, .125, .9375, .78125, .625, 1),
-        cuboid(.25, .09375, .9375, .75, .65625, 1),
-        cuboid(.28125, .0625, .9375, .71875, .6875, 1),
-        cuboid(.34375, .03125, .9375, .65625, .71875, 1),
-        cuboid(.40625, 0, .9375, .59375, .75, 1)
-    );
-    public static final VoxelShape SHAPE1E = union(
-        cuboid(0, 0, .40625, .0625, .75, .59375),
-        cuboid(0, .03125, .34375, .0625, .71875, .65625),
-        cuboid(0, .0625, .28125, .0625, .6875, .71875),
-        cuboid(0, .09375, .25, .0625, .65625, .75),
-        cuboid(0, .125, .21875, .0625, .625, .78125),
-        cuboid(0, .15625, .1875, .0625, .59375, .8125),
-        cuboid(0, .21875, .15625, .0625, .53125, .84375),
-        cuboid(0, .28125, .125, .0625, .46875, .875)
-    );
-    public static final VoxelShape SHAPE1S = union(
-        cuboid(.125, .28125, 0, .875, .46875, .0625),
-        cuboid(.15625, .21875, 0, .84375, .53125, .0625),
-        cuboid(.1875, .15625, 0, .8125, .59375, .0625),
-        cuboid(.21875, .125, 0, .78125, .625, .0625),
-        cuboid(.25, .09375, 0, .75, .65625, .0625),
-        cuboid(.28125, .0625, 0, .71875, .6875, .0625),
-        cuboid(.34375, .03125, 0, .65625, .71875, .0625),
-        cuboid(.40625, 0, 0, .59375, .75, .0625)
-    );
-    public static final VoxelShape SHAPE1W = union(
-        cuboid(.9375, 0, .40625, 1, .75, .59375),
-        cuboid(.9375, .03125, .34375, 1, .71875, .65625),
-        cuboid(.9375, .0625, .28125, 1, .6875, .71875),
-        cuboid(.9375, .09375, .25, 1, .65625, .75),
-        cuboid(.9375, .125, .21875, 1, .625, .78125),
-        cuboid(.9375, .15625, .1875, 1, .59375, .8125),
-        cuboid(.9375, .21875, .15625, 1, .53125, .84375),
-        cuboid(.9375, .28125, .125, 1, .46875, .875)
-    );
-    public static final VoxelShape SHAPE2N = union(
-        cuboid(.125, .53125, .9375, .875, .71875, 1),
-        cuboid(.15625, .46875, .9375, .84375, .78125, 1),
-        cuboid(.1875, .40625, .9375, .8125, .84375, 1),
-        cuboid(.21875, .375, .9375, .78125, .875, 1),
-        cuboid(.25, .34375, .9375, .75, .90625, 1),
-        cuboid(.28125, .3125, .9375, .71875, .9375, 1),
-        cuboid(.34375, .28125, .9375, .65625, .96875, 1),
-        cuboid(.40625, .25, .9375, .59375, 1, 1)
-    );
-    public static final VoxelShape SHAPE2E = union(
-        cuboid(0, .25, .40625, .0625, 1, .59375),
-        cuboid(0, .28125, .34375, .0625, .96875, .65625),
-        cuboid(0, .3125, .28125, .0625, .9375, .71875),
-        cuboid(0, .34375, .25, .0625, .90625, .75),
-        cuboid(0, .375, .21875, .0625, .875, .78125),
-        cuboid(0, .40625, .1875, .0625, .84375, .8125),
-        cuboid(0, .46875, .15625, .0625, .78125, .84375),
-        cuboid(0, .53125, .125, .0625, .71875, .875)
-    );
-    public static final VoxelShape SHAPE2S = union(
-        cuboid(.125, .53125, 0, .875, .71875, .0625),
-        cuboid(.15625, .46875, 0, .84375, .78125, .0625),
-        cuboid(.1875, .40625, 0, .8125, .84375, .0625),
-        cuboid(.21875, .375, 0, .78125, .875, .0625),
-        cuboid(.25, .34375, 0, .75, .90625, .0625),
-        cuboid(.28125, .3125, 0, .71875, .9375, .0625),
-        cuboid(.34375, .28125, 0, .65625, .96875, .0625),
-        cuboid(.40625, .25, 0, .59375, 1, .0625)
-    );
-    public static final VoxelShape SHAPE2W = union(
-        cuboid(.9375, .25, .40625, 1, 1, .59375),
-        cuboid(.9375, .28125, .34375, 1, .96875, .65625),
-        cuboid(.9375, .3125, .28125, 1, .9375, .71875),
-        cuboid(.9375, .34375, .25, 1, .90625, .75),
-        cuboid(.9375, .375, .21875, 1, .875, .78125),
-        cuboid(.9375, .40625, .1875, 1, .84375, .8125),
-        cuboid(.9375, .46875, .15625, 1, .78125, .84375),
-        cuboid(.9375, .53125, .125, 1, .71875, .875)
-    );
+    private static final ConcurrentHashMap<@NotNull Pair<
+        @NotNull Double, @NotNull Double
+    >, @NotNull Quartet<
+        @NotNull Triple<
+            @NotNull VoxelShape, @NotNull VoxelShape, @NotNull VoxelShape
+        >, @NotNull Triple<
+            @NotNull VoxelShape, @NotNull VoxelShape, @NotNull VoxelShape
+        >, @NotNull Triple<
+            @NotNull VoxelShape, @NotNull VoxelShape, @NotNull VoxelShape
+        >, @NotNull Triple<
+            @NotNull VoxelShape, @NotNull VoxelShape, @NotNull VoxelShape
+        >
+    >> CACHED_SHAPES = new ConcurrentHashMap<>();
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull Vector2d @NotNull[]
+    getCircleCovers(double diameter) {
+        Vector2d[] vectors = new Vector2d[]{
+            new Vector2d(0., 0.375),
+            new Vector2d(0.03125, 0.28125),
+            new Vector2d(0.0625, 0.21875),
+            new Vector2d(0.09375, 0.1875),
+            new Vector2d(0.125, 0.15625),
+            new Vector2d(0.15625, 0.125),
+            new Vector2d(0.1875, 0.09375),
+            new Vector2d(0.21875, 0.0625),
+            new Vector2d(0.28125, 0.03125),
+            new Vector2d(0.375, 0.)
+        };
+        double margin = (1. - diameter) / 2;
+        for (Vector2d vector : vectors) {
+            vector.mul(diameter);
+            vector.x += margin;
+        }
+        return vectors;
+    }
+
+    public final double diameter;
+    public final @NotNull VoxelShape shape0N;
+    public final @NotNull VoxelShape shape1N;
+    public final @NotNull VoxelShape shape2N;
+    public final @NotNull VoxelShape shape0E;
+    public final @NotNull VoxelShape shape1E;
+    public final @NotNull VoxelShape shape2E;
+    public final @NotNull VoxelShape shape0S;
+    public final @NotNull VoxelShape shape1S;
+    public final @NotNull VoxelShape shape2S;
+    public final @NotNull VoxelShape shape0W;
+    public final @NotNull VoxelShape shape1W;
+    public final @NotNull VoxelShape shape2W;
+
+    public CircleStandingSymbolBlock(
+        double diameter, double thickness, Settings settings
+    ) {
+        super(settings);
+        this.diameter = diameter;
+        Pair<Double, Double> pair = Pair.of(this.diameter, thickness);
+        Quartet<Triple<VoxelShape, VoxelShape, VoxelShape>,
+                Triple<VoxelShape, VoxelShape, VoxelShape>,
+                Triple<VoxelShape, VoxelShape, VoxelShape>,
+                Triple<VoxelShape, VoxelShape, VoxelShape>> quartet =
+        CACHED_SHAPES.get(pair);
+        if (quartet != null) {
+            Triple<VoxelShape, VoxelShape, VoxelShape> triple =
+            quartet.getA();
+            this.shape0N = triple.getLeft();
+            this.shape1N = triple.getMiddle();
+            this.shape2N = triple.getRight();
+            triple = quartet.getB();
+            this.shape0E = triple.getLeft();
+            this.shape1E = triple.getMiddle();
+            this.shape2E = triple.getRight();
+            triple = quartet.getC();
+            this.shape0S = triple.getLeft();
+            this.shape1S = triple.getMiddle();
+            this.shape2S = triple.getRight();
+            triple = quartet.getD();
+            this.shape0W = triple.getLeft();
+            this.shape1W = triple.getMiddle();
+            this.shape2W = triple.getRight();
+        } else {
+            Vector2d[] vectors = getCircleCovers(this.diameter);
+            double oneMinusThickness = 1. - thickness;
+            double sx = vectors[0].x;
+            double oneMinusSx = 1. - sx;
+            double sy = vectors[0].y;
+            double dMinusSy = this.diameter - sy;
+            double oneMinusD = 1. - this.diameter;
+            double oneMinusDHalf = oneMinusD / 2.;
+            VoxelShape shape0N = cuboid(
+                sx, sy + oneMinusDHalf, oneMinusThickness,
+                oneMinusSx, dMinusSy + oneMinusDHalf, 1.
+            );
+            VoxelShape shape1N =
+            cuboid(sx, sy, oneMinusThickness, oneMinusSx, dMinusSy, 1.);
+            VoxelShape shape2N = cuboid(
+                sx, 1. - dMinusSy, oneMinusThickness, oneMinusSx, 1. - sy, 1.
+            );
+            VoxelShape shape0E = cuboid(
+                0., sy + oneMinusDHalf, sx,
+                thickness, dMinusSy + oneMinusDHalf, oneMinusSx
+            );
+            VoxelShape shape1E =
+            cuboid(0., sy, sx, thickness, dMinusSy, oneMinusSx);
+            VoxelShape shape2E =
+            cuboid(0., 1. - dMinusSy, sx, thickness, 1. - sy, oneMinusSx);
+            VoxelShape shape0S = cuboid(
+                sx, sy + oneMinusDHalf, 0.,
+                oneMinusSx, dMinusSy + oneMinusDHalf, thickness
+            );
+            VoxelShape shape1S =
+            cuboid(sx, sy, 0., oneMinusSx, dMinusSy, thickness);
+            VoxelShape shape2S = cuboid(
+                sx, 1. - dMinusSy, 0., oneMinusSx, 1. - sy, thickness
+            );
+            VoxelShape shape0W = cuboid(
+                oneMinusThickness, sy + oneMinusDHalf, sx,
+                1., dMinusSy + oneMinusDHalf, oneMinusSx
+            );
+            VoxelShape shape1W =
+            cuboid(oneMinusThickness, sy, sx, 1., dMinusSy, oneMinusSx);
+            VoxelShape shape2W = cuboid(
+                oneMinusThickness, 1. - dMinusSy, sx, 1., 1. - sy, oneMinusSx
+            );
+            for (int i = 1; i < vectors.length; i++) {
+                sx = vectors[i].x;
+                oneMinusSx = 1. - sx;
+                sy = vectors[i].y;
+                dMinusSy = this.diameter - sy;
+                oneMinusD = 1. - this.diameter;
+                oneMinusDHalf = oneMinusD / 2.;
+                shape0N = union(shape0N, cuboid(
+                    sx, sy + oneMinusDHalf, oneMinusThickness,
+                    oneMinusSx, dMinusSy + oneMinusDHalf, 1.
+                ));
+                shape1N = union(shape1N, cuboid(
+                    sx, sy, oneMinusThickness, oneMinusSx, dMinusSy, 1.
+                ));
+                shape2N = union(shape2N, cuboid(
+                    sx, 1. - dMinusSy, oneMinusThickness, oneMinusSx, 1. - sy, 1.
+                ));
+                shape0E = union(shape0E, cuboid(
+                    0., sy + oneMinusDHalf, sx,
+                    thickness, dMinusSy + oneMinusDHalf, oneMinusSx
+                ));
+                shape1E = union(shape1E, cuboid(
+                    0., sy, sx, thickness, dMinusSy, oneMinusSx
+                ));
+                shape2E = union(shape2E, cuboid(
+                    0., 1. - dMinusSy, sx, thickness, 1. - sy, oneMinusSx
+                ));
+                shape0S = union(shape0S, cuboid(
+                    sx, sy + oneMinusDHalf, 0.,
+                    oneMinusSx, dMinusSy + oneMinusDHalf, thickness
+                ));
+                shape1S = union(shape1S, cuboid(
+                    sx, sy, 0., oneMinusSx, dMinusSy, thickness
+                ));
+                shape2S = union(shape2S, cuboid(
+                    sx, 1. - dMinusSy, 0., oneMinusSx, 1. - sy, thickness
+                ));
+                shape0W = union(shape0W, cuboid(
+                    oneMinusThickness, sy + oneMinusDHalf, sx,
+                    1., dMinusSy + oneMinusDHalf, oneMinusSx
+                ));
+                shape1W = union(shape1W, cuboid(
+                    oneMinusThickness, sy, sx, 1., dMinusSy, oneMinusSx
+                ));
+                shape2W = union(shape2W, cuboid(
+                    oneMinusThickness, 1. - dMinusSy, sx, 1., 1. - sy, oneMinusSx
+                ));
+            }
+            CACHED_SHAPES.put(pair, new Quartet<>(
+                Triple.of(shape0N, shape1N, shape2N),
+                Triple.of(shape0E, shape1E, shape2E),
+                Triple.of(shape0S, shape1S, shape2S),
+                Triple.of(shape0W, shape1W, shape2W)
+            ));
+            this.shape0N = shape0N;
+            this.shape1N = shape1N;
+            this.shape2N = shape2N;
+            this.shape0E = shape0E;
+            this.shape1E = shape1E;
+            this.shape2E = shape2E;
+            this.shape0S = shape0S;
+            this.shape1S = shape1S;
+            this.shape2S = shape2S;
+            this.shape0W = shape0W;
+            this.shape1W = shape1W;
+            this.shape2W = shape2W;
+        }
+    }
+
+    public CircleStandingSymbolBlock(Settings settings) {
+        this(0.8, 0.025, settings);
+    }
 
     @Override
     public VoxelShape getOutlineShape(
@@ -156,27 +237,27 @@ extends Attachment3DoubleFaceFacingBlock {
         switch (f) {
             case 24:
                 switch (i) {
-                    case 1: return SHAPE1N;
-                    case 2: return SHAPE2N;
-                    default: return SHAPE0N;
+                    case 1: return this.shape1N;
+                    case 2: return this.shape2N;
+                    default: return this.shape0N;
                 }
             case 25:
                 switch (i) {
-                    case 1: return SHAPE1E;
-                    case 2: return SHAPE2E;
-                    default: return SHAPE0E;
+                    case 1: return this.shape1E;
+                    case 2: return this.shape2E;
+                    default: return this.shape0E;
                 }
             case 26:
                 switch (i) {
-                    case 1: return SHAPE1S;
-                    case 2: return SHAPE2S;
-                    default: return SHAPE0S;
+                    case 1: return this.shape1S;
+                    case 2: return this.shape2S;
+                    default: return this.shape0S;
                 }
             case 27:
                 switch (i) {
-                    case 1: return SHAPE1W;
-                    case 2: return SHAPE2W;
-                    default: return SHAPE0W;
+                    case 1: return this.shape1W;
+                    case 2: return this.shape2W;
+                    default: return this.shape0W;
                 }
         }
         switch (i) {

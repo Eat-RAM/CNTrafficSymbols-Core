@@ -34,11 +34,10 @@ public class NumericTextFieldWidget extends TextFieldWidget {
         if (cp >= '0' && cp <= '9') {
             return super.charTyped(input);
         }
-        if (this.allowDecimal && cp == '.') {
-            if (!this.getText().contains(".") ||
-                this.getSelectedText().contains(".")) {
-                return super.charTyped(input);
-            }
+        if (this.allowDecimal && cp == '.' &&
+            (!this.getText().contains(".") ||
+             this.getSelectedText().contains("."))) {
+            return super.charTyped(input);
         }
         if (this.allowNegative && cp == '-' &&
             (this.getText().isEmpty() ||
@@ -51,8 +50,10 @@ public class NumericTextFieldWidget extends TextFieldWidget {
     @Override
     public void write(String string) {
         StringBuilder sb = new StringBuilder();
-        boolean hasDot = this.getText().contains(".") &&
-                         !this.getSelectedText().contains(".");
+        boolean hasDot =
+        this.getText().contains(".") && !this.getSelectedText().contains(".");
+        boolean hasHyphen =
+        this.getText().contains("-") && !this.getSelectedText().contains("-");
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
             if (c >= '0' && c <= '9') {
@@ -60,6 +61,9 @@ public class NumericTextFieldWidget extends TextFieldWidget {
             } else if (this.allowDecimal && c == '.' && !hasDot) {
                 sb.append('.');
                 hasDot = true;
+            } else if (this.allowNegative && c == '-' && !hasHyphen) {
+                sb.append('-');
+                hasHyphen = true;
             }
         }
         if (!sb.isEmpty()) {
