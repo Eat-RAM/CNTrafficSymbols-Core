@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cntrafficsymbols_core",
-  "version": "0.0.2-rc2",
+  "version": "0.0.3-a1",
   "name": "CNTrafficSymbols Core",
   "description": "Core module of CNTrafficSymbols",
   "authors": [
@@ -27,7 +27,7 @@
     }
   ],
   "depends": {
-    "fabricloader": ">=0.14.0",
+    "fabricloader": ">=0.18.0",
     "minecraft": "1.20.4",
     "java": ">=17"
   }

@@ -3,11 +3,11 @@ plugins {
     id("maven-publish")
 }
 
-version = project.property("mod_version") as String
+version = project.findProperty("mod_version") as? String ?: "unknown"
 group = project.property("maven_group") as String
 
 base {
-    archivesName = project.property("archives_base_name") as String
+    archivesName = project.findProperty("archives_base_name") as? String ?:name
 }
 
 repositories {
@@ -50,12 +50,16 @@ dependencies {
     )
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    //modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+    //modImplementation(
+    //    "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    //)
     
     // Uncomment the following line to enable the deprecated Fabric API modules. 
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
-    // modImplementation("net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}")
+    //modImplementation("net.fabricmc.fabric-api:fabric-api-deprecated:${
+    //    project.fabric_version
+    //}")
     //modImplementation(files("nbtutils-0.0.1a1.jar"))
     //modImplementation(files("nbtutils_bridge_mc-0.0.1-a1.jar"))
     //modImplementation(files("number_id_revival-0.0.1-a1.jar"))

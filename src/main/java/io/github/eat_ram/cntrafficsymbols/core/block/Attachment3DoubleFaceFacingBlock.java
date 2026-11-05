@@ -8,9 +8,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.math.RotationPropertyHelper;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
-
 public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock {
     public Attachment3DoubleFaceFacingBlock(Settings settings) {
         super(settings);
@@ -22,10 +19,8 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock {
     @Override
     protected void
     appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(DoubleFaceFacing.FACING, Attachment3.ATTACHMENT);
-        if (this.getWaterloggedProperty()) {
-            builder.add(WATERLOGGED);
-        }
+        super.appendProperties(builder);
+        builder.add(Attachment3.ATTACHMENT);
     }
 
     @Override
@@ -50,11 +45,6 @@ public class Attachment3DoubleFaceFacingBlock extends DoubleFaceFacingBlock {
                 Attachment3.DOWN : Attachment3.NONE
             )
         ));
-        if (this.getWaterloggedProperty()) {
-            sst = sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
-                ctx.getBlockPos()
-            ).getFluid() == WATER);
-        }
-        return sst;
+        return this.configurePlacedFluid(sst, ctx);
     }
 }

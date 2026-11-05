@@ -4,11 +4,6 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.FacePosition9;
 import org.jetbrains.annotations.Contract;
 
 public abstract class FacePosition9Mirrorer {
-    @Contract("-> fail")
-    private FacePosition9Mirrorer() {
-        throw new UnsupportedOperationException();
-    }
-
     public static FacePosition9 mirrorX(FacePosition9 v) {
         switch (v.id / 9) {
             case 0: return FacePosition9.byID(v.id + 9);
@@ -47,5 +42,10 @@ public abstract class FacePosition9Mirrorer {
             case 4: return FacePosition9.byID(v.id + 9);
             default: return FacePosition9.byID(v.id - 9);
         }
+    }
+
+    @Contract(value = "-> fail", pure = true)
+    private FacePosition9Mirrorer() {
+        throw new UnsupportedOperationException("Utility class");
     }
 }

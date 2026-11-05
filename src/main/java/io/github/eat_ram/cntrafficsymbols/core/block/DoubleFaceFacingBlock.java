@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -19,20 +20,13 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
-
 public class DoubleFaceFacingBlock extends Block
-implements ManagedWaterloggable, CountedItemComposed {
+implements CountedItemComposed, FluidloggedConfigurable {
     public DoubleFaceFacingBlock(Settings settings) {
         super(settings);
-        BlockState st = this.getDefaultState().with(
+        this.setDefaultState(this.getDefaultState().with(
             DoubleFaceFacing.FACING, DoubleFaceFacing.SOUTH
-        );
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
-        this.setDefaultState(st);
+        ));
     }
 
     @Override
@@ -70,9 +64,6 @@ implements ManagedWaterloggable, CountedItemComposed {
     protected void
     appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(DoubleFaceFacing.FACING);
-        if (this.getWaterloggedProperty()) {
-            builder.add(WATERLOGGED);
-        }
     }
 
     @Override
@@ -89,12 +80,7 @@ implements ManagedWaterloggable, CountedItemComposed {
                 (ctx.getSide().getHorizontal() + 2) % 4 + 24
             )
         );
-        if (this.getWaterloggedProperty()) {
-            sst = sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
-                ctx.getBlockPos()
-            ).getFluid() == WATER);
-        }
-        return sst;
+        return this.configurePlacedFluid(sst, ctx);
     }
 
     @Override
@@ -102,20 +88,14 @@ implements ManagedWaterloggable, CountedItemComposed {
         BlockState state, Direction direction, BlockState neighborState,
         WorldAccess world, BlockPos pos, BlockPos neighborPos
     ) {
-        if (this.getWaterloggedProperty() &&
-            state.get(WATERLOGGED).booleanValue()) {
-            world.scheduleFluidTick(pos, WATER, WATER.getTickRate(world));
+        FluidState fs = state.getFluidState();
+        if (!fs.isEmpty()) {
+            Fluid fluid = fs.getFluid();
+            world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(
             state, direction, neighborState, world, pos, neighborPos
         );
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return (this.getWaterloggedProperty() &&
-                state.get(WATERLOGGED).booleanValue()) ?
-               WATER.getStill(false) : super.getFluidState(state);
     }
 
     @Override

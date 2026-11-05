@@ -14,8 +14,8 @@ public abstract class WorldEditPasteWarning {
     ThreadLocal<@NotNull IdentityHashMap<@NotNull Block, Void>>
     COPIED_BLOCKS = ThreadLocal.withInitial(IdentityHashMap::new);
 
-    @Contract("-> fail")
+    @Contract(value = "-> fail", pure = true)
     private WorldEditPasteWarning() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Utility class");
     }
 }

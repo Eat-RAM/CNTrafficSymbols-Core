@@ -4,11 +4,6 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.FacePosition9;
 import org.jetbrains.annotations.Contract;
 
 public abstract class FacePosition9Rotator {
-    @Contract("-> fail")
-    private FacePosition9Rotator() {
-        throw new UnsupportedOperationException();
-    }
-
     public static FacePosition9 rotate(FacePosition9 v, int t) {
         switch (v.id / 9) {
             case 0: {
@@ -66,5 +61,10 @@ public abstract class FacePosition9Rotator {
                 }
             }
         }
+    }
+
+    @Contract(value = "-> fail", pure = true)
+    private FacePosition9Rotator() {
+        throw new UnsupportedOperationException("Utility class");
     }
 }

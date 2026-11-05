@@ -4,11 +4,6 @@ import io.github.eat_ram.cntrafficsymbols.core.struct.DoubleFaceFacing;
 import org.jetbrains.annotations.Contract;
 
 public abstract class DoubleFaceFacingMirrorer {
-    @Contract("-> fail")
-    private DoubleFaceFacingMirrorer() {
-        throw new UnsupportedOperationException();
-    }
-
     public static DoubleFaceFacing mirrorX(DoubleFaceFacing v) {
         if (v.isWall()) {
             return (v.id == 25 || v.id == 27) ?
@@ -31,5 +26,10 @@ public abstract class DoubleFaceFacingMirrorer {
             ((v.id > 16) ? DoubleFaceFacing.byID(40 - v.id) : v) :
             DoubleFaceFacing.byID(24 - v.id)
         ) : DoubleFaceFacing.byID(8 - v.id);
+    }
+
+    @Contract(value = "-> fail", pure = true)
+    private DoubleFaceFacingMirrorer() {
+        throw new UnsupportedOperationException("Utility class");
     }
 }

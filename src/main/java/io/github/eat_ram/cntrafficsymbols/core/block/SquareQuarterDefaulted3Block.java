@@ -6,30 +6,24 @@ import java.util.Collections;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
-
 public class SquareQuarterDefaulted3Block extends Block
-implements ManagedWaterloggable, MultiItemComposed {
+implements FluidloggedConfigurable, MultiItemComposed {
     public static final IntProperty NORTHWEST =
     IntProperty.of("northwest", 0, 2);
     public static final IntProperty NORTHEAST =
@@ -52,9 +46,6 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState st = this.getDefaultState().with(NORTHWEST, 0)
                         .with(NORTHEAST, 0).with(SOUTHWEST, 0)
                         .with(SOUTHEAST, 0);
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
@@ -63,96 +54,50 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState st = this.getDefaultState().with(NORTHWEST, 0)
                         .with(NORTHEAST, 0).with(SOUTHWEST, 0)
                         .with(SOUTHEAST, 0);
-        if (this.getWaterloggedProperty()) {
-            st = st.with(WATERLOGGED, false);
-        }
         this.setDefaultState(st);
     }
 
     @Override
     public ItemStack
     getPickStack(WorldView world, BlockPos pos, BlockState state) {
-        byte s1 = 0;
-        byte s2 = 0;
+        int s1 = 0;
+        int s2 = 0;
         switch (state.get(NORTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(NORTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
-        if (s1 == (byte)0) {
-            return new ItemStack((s2 == (byte)0) ? this.itm0 : this.itm2);
+        if (s1 == 0) {
+            return new ItemStack(s2 == 0 ? this.itm0 : this.itm2);
         }
-        if (s2 == (byte)0) {
+        if (s2 == 0) {
             return new ItemStack(this.itm1);
         }
-        return new ItemStack((Math.random() < .5) ? this.itm1 : this.itm2);
+        return new ItemStack(Math.random() < .5 ? this.itm1 : this.itm2);
     }
 
     @Override
     protected void
     appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST);
-        if (this.getWaterloggedProperty()) {
-            builder.add(WATERLOGGED);
-        }
-    }
-
-    public boolean shouldHardcodedDrop(
-        World world, PlayerEntity player, BlockPos pos, BlockState state,
-        @Nullable BlockEntity blockEntity, ItemStack tool
-    ) {
-        return true;
-    }
-
-    @Override
-    public void afterBreak(
-        World world, PlayerEntity player, BlockPos pos,
-        BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool
-    ) {
-        super.afterBreak(world, player, pos, state, blockEntity, tool);
-        if ((world instanceof ServerWorld) && this.shouldHardcodedDrop(
-            world, player, pos, state, blockEntity, tool
-        )) {
-            for (ItemStack i : this.getComposedItems(state, blockEntity)) {
-                ItemScatterer.spawn(
-                    world, pos.getX(), pos.getY(), pos.getZ(), i
-                );
-            }
-        }
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState st = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (st.isOf(this)) {
-            byte repl = 1;
+            int repl = 1;
             if (ctx.getStack().isOf(this.itm2)) {
                 repl++;
             } else if (!ctx.getStack().isOf(this.itm1)) {
@@ -160,19 +105,12 @@ implements ManagedWaterloggable, MultiItemComposed {
                     "Unexpected item " + ctx.getStack().getItem()
                 );
             }
-            return st.with(readyToReplace(st, ctx), (int) repl);
+            return st.with(readyToReplace(st, ctx), repl);
         }
         if (ctx.getStack().isOf(this.itm0)) {
-            if (this.getWaterloggedProperty()) {
-                return this.getDefaultState().with(
-                    WATERLOGGED, ctx.getWorld().getFluidState(
-                        ctx.getBlockPos()
-                    ).getFluid() == WATER
-                );
-            }
-            return this.getDefaultState();
+            return this.configurePlacedFluid(this.getDefaultState(), ctx);
         }
-        byte repl = 1;
+        int repl = 1;
         if (ctx.getStack().isOf(this.itm2)) {
             repl++;
         } else if (!ctx.getStack().isOf(this.itm1)) {
@@ -181,14 +119,9 @@ implements ManagedWaterloggable, MultiItemComposed {
             );
         }
         BlockState sst = this.getDefaultState().with(
-            readyToReplace(null, ctx), (int)repl
+            readyToReplace(null, ctx), repl
         );
-        if (this.getWaterloggedProperty()) {
-            return sst.with(WATERLOGGED, ctx.getWorld().getFluidState(
-                ctx.getBlockPos()
-            ).getFluid() == WATER);
-        }
-        return sst;
+        return this.configurePlacedFluid(sst, ctx);
     }
 
     @Override
@@ -212,19 +145,18 @@ implements ManagedWaterloggable, MultiItemComposed {
         double rz = ctx.getHitPos().z - ctx.getBlockPos().getZ();
         switch (ctx.getSide()) {
             case DOWN:
-            case UP: {
+            case UP:
                 if (rx < .5) {
                     if (rz < .5) {
-                        return (nw == 0) ? NORTHWEST : null;
+                        return nw == 0 ? NORTHWEST : null;
                     }
-                    return (sw == 0) ? SOUTHWEST : null;
+                    return sw == 0 ? SOUTHWEST : null;
                 }
                 if (rz < .5) {
-                    return (ne == 0) ? NORTHEAST : null;
+                    return ne == 0 ? NORTHEAST : null;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
-            case NORTH: {
+                return se == 0 ? SOUTHEAST : null;
+            case NORTH:
                 if (rx < .5) {
                     if (rz < .4375) {
                         return null;
@@ -232,19 +164,18 @@ implements ManagedWaterloggable, MultiItemComposed {
                     if (sw == 0) {
                         return SOUTHWEST;
                     }
-                    return (nw == 0) ? NORTHWEST : null;
+                    return nw == 0 ? NORTHWEST : null;
                 }
                 if (se == 0) {
                     return SOUTHEAST;
                 }
-                return (ne == 0) ? NORTHEAST : null;
-            }
-            case SOUTH: {
+                return ne == 0 ? NORTHEAST : null;
+            case SOUTH:
                 if (rx < .5) {
                     if (nw == 0) {
                         return NORTHWEST;
                     }
-                    return (sw == 0) ? SOUTHWEST : null;
+                    return sw == 0 ? SOUTHWEST : null;
                 }
                 if (rz > .5625) {
                     return null;
@@ -252,9 +183,8 @@ implements ManagedWaterloggable, MultiItemComposed {
                 if (ne == 0) {
                     return NORTHEAST;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
-            case WEST: {
+                return se == 0 ? SOUTHEAST : null;
+            case WEST:
                 if (rz < .5) {
                     if (rx < .4375) {
                         return null;
@@ -262,19 +192,18 @@ implements ManagedWaterloggable, MultiItemComposed {
                     if (ne == 0) {
                         return NORTHEAST;
                     }
-                    return (nw == 0) ? NORTHWEST : null;
+                    return nw == 0 ? NORTHWEST : null;
                 }
                 if (se == 0) {
                     return SOUTHEAST;
                 }
-                return (sw == 0) ? SOUTHWEST : null;
-            }
-            case EAST: {
+                return sw == 0 ? SOUTHWEST : null;
+            case EAST:
                 if (rz < .5) {
                     if (nw == 0) {
                         return NORTHWEST;
                     }
-                    return (ne == 0) ? NORTHEAST : null;
+                    return ne == 0 ? NORTHEAST : null;
                 }
                 if (rx > .5625) {
                     return null;
@@ -282,8 +211,7 @@ implements ManagedWaterloggable, MultiItemComposed {
                 if (sw == 0) {
                     return SOUTHWEST;
                 }
-                return (se == 0) ? SOUTHEAST : null;
-            }
+                return se == 0 ? SOUTHEAST : null;
             default: return null;
         }
     }
@@ -291,14 +219,16 @@ implements ManagedWaterloggable, MultiItemComposed {
     @Override
     public BlockState rotate(BlockState st, BlockRotation rotation) {
         switch (rotation) {
-            case CLOCKWISE_90: return st.with(NORTHWEST, st.get(SOUTHWEST))
-                                        .with(NORTHEAST, st.get(NORTHWEST))
-                                        .with(SOUTHEAST, st.get(NORTHEAST))
-                                        .with(SOUTHWEST, st.get(SOUTHEAST));
-            case CLOCKWISE_180: return st.with(NORTHWEST, st.get(SOUTHEAST))
-                                         .with(NORTHEAST, st.get(SOUTHWEST))
-                                         .with(SOUTHEAST, st.get(NORTHWEST))
-                                         .with(SOUTHWEST, st.get(NORTHEAST));
+            case CLOCKWISE_90:
+                return st.with(NORTHWEST, st.get(SOUTHWEST))
+                         .with(NORTHEAST, st.get(NORTHWEST))
+                         .with(SOUTHEAST, st.get(NORTHEAST))
+                         .with(SOUTHWEST, st.get(SOUTHEAST));
+            case CLOCKWISE_180:
+                return st.with(NORTHWEST, st.get(SOUTHEAST))
+                         .with(NORTHEAST, st.get(SOUTHWEST))
+                         .with(SOUTHEAST, st.get(NORTHWEST))
+                         .with(SOUTHWEST, st.get(NORTHEAST));
             case COUNTERCLOCKWISE_90:
                 return st.with(NORTHWEST, st.get(NORTHEAST))
                          .with(NORTHEAST, st.get(SOUTHEAST))
@@ -328,20 +258,14 @@ implements ManagedWaterloggable, MultiItemComposed {
         BlockState state, Direction direction, BlockState neighborState,
         WorldAccess world, BlockPos pos, BlockPos neighborPos
     ) {
-        if (this.getWaterloggedProperty() &&
-            state.get(WATERLOGGED).booleanValue()) {
-            world.scheduleFluidTick(pos, WATER, WATER.getTickRate(world));
+        FluidState fs = state.getFluidState();
+        if (!fs.isEmpty()) {
+            Fluid fluid = fs.getFluid();
+            world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(
             state, direction, neighborState, world, pos, neighborPos
         );
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return (this.getWaterloggedProperty() &&
-                state.get(WATERLOGGED).booleanValue()) ?
-               WATER.getStill(false) : super.getFluidState(state);
     }
 
     public @Nullable Item setItm0(@Nullable Item v) {
@@ -371,41 +295,25 @@ implements ManagedWaterloggable, MultiItemComposed {
     @Override
     public @NotNull Iterable<@NotNull ItemStack>
     getComposedItems(BlockState state, @Nullable BlockEntity be) {
-        byte s1 = 0;
-        byte s2 = 0;
+        int s1 = 0;
+        int s2 = 0;
         switch (state.get(NORTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(NORTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHWEST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
         switch (state.get(SOUTHEAST).intValue()) {
-            case 1:
-                s1++;
-                break;
-            case 2:
-                s2++;
-                break;
+            case 1: s1++; break;
+            case 2: s2++; break;
         }
-        if (s1 == (byte)0 && s2 == (byte)0 && this.itm0 != null) {
+        if (s1 == 0 && s2 == 0 && this.itm0 != null) {
             return Collections.singletonList(new ItemStack(this.itm0));
         }
         if (s1 != 0 && this.itm1 != null) {
@@ -413,7 +321,7 @@ implements ManagedWaterloggable, MultiItemComposed {
                 new ItemStack(this.itm1, s1), new ItemStack(this.itm2, s2)
             ) : Collections.singletonList(new ItemStack(this.itm1, s1));
         }
-        return (this.itm2 != null) ? Collections.singletonList(
+        return this.itm2 != null ? Collections.singletonList(
             new ItemStack(this.itm2, s2)
         ) : Collections.emptyList();
     }

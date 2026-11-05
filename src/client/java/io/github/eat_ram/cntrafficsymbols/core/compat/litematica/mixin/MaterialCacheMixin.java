@@ -56,7 +56,8 @@ public abstract class MaterialCacheMixin {
     }
 
     @ModifyReturnValue(
-        method = "getItems(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)Lcom/google/common/collect/ImmutableList;",
+        method =
+"getItems(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)Lcom/google/common/collect/ImmutableList;",
         at = @At("RETURN")
     )
     private ImmutableList<ItemStack> addEntries(

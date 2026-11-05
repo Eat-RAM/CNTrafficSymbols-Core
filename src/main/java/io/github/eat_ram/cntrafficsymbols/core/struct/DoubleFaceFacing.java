@@ -2,6 +2,8 @@ package io.github.eat_ram.cntrafficsymbols.core.struct;
 
 import net.minecraft.state.property.EnumProperty;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 public enum DoubleFaceFacing implements net.minecraft.util.StringIdentifiable {
     SOUTH("south", 0), SSW("ssw", 1),
@@ -19,17 +21,17 @@ public enum DoubleFaceFacing implements net.minecraft.util.StringIdentifiable {
     WALL_NORTH("wall_north", 24), WALL_EAST("wall_east", 25),
     WALL_SOUTH("wall_south", 26), WALL_WEST("wall_west", 27);
 
-    public final String str;
-    public final int id;
+    public final @NotNull String str;
+    public final @Range(from = 0, to = 27) int id;
 
-    private DoubleFaceFacing(String n, int i) {
+    DoubleFaceFacing(@NotNull String n, @Range(from = 0, to = 27) int i) {
         this.str = n;
         this.id = i;
     }
 
     @Override
     @Contract(pure = true)
-    public String asString() {
+    public @NotNull String asString() {
         return this.str;
     }
 
@@ -41,6 +43,7 @@ public enum DoubleFaceFacing implements net.minecraft.util.StringIdentifiable {
         WALL_NORTH, WALL_EAST, WALL_SOUTH, WALL_WEST
     };
 
+    @Contract(pure = true)
     public static DoubleFaceFacing byID(int id) {
         return VARS[id];
     }

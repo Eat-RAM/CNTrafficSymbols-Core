@@ -7,31 +7,26 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.WorldAccess;
-import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
-import static net.minecraft.fluid.Fluids.WATER;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static net.minecraft.util.shape.VoxelShapes.cuboid;
 import static net.minecraft.util.shape.VoxelShapes.empty;
 import static net.minecraft.util.shape.VoxelShapes.union;
 
-public abstract class AbstractCylindricalRodBlock
-extends Block implements ManagedWaterloggable {
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> DOWN_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, 0., .4375), Triple.of(.625, .5, .5625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, 0., .375), Triple.of(.5625, .5, .625)
-        )
-    );
+public abstract class AbstractCylindricalRodBlock extends Block {
+    public static final List<Entry<Vector3d, Vector3d>> DOWN_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0., 0.4375), new Vector3d(0.625, 0.5, 0.5625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0., 0.375), new Vector3d(0.5625, 0.5, 0.625)
+    ));
     public static final VoxelShape DOWN_CENTER =
     createOffsetShape(DOWN_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape DOWN_NORTH =
@@ -50,16 +45,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(DOWN_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape DOWN_NORTHWEST =
     createOffsetShape(DOWN_CENTER_BASE, -.375, 0, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> UP_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, .5, .4375), Triple.of(.625, 1., .5625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .5, .375), Triple.of(.5625, 1., .625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> UP_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0.5, 0.4375), new Vector3d(0.625, 1., 0.5625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.5, 0.375), new Vector3d(0.5625, 1., 0.625)
+    ));
     public static final VoxelShape UP_CENTER =
     createOffsetShape(UP_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape UP_NORTH =
@@ -78,16 +69,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(UP_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape UP_NORTHWEST =
     createOffsetShape(UP_CENTER_BASE, -.375, 0, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> NORTH_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, .4375, 0.), Triple.of(.625, .5625, .5)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .375, 0.), Triple.of(.5625, .625, .5)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> NORTH_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0.4375, 0.), new Vector3d(0.625, 0.5625, 0.5)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.375, 0.), new Vector3d(0.5625, 0.625, 0.5)
+    ));
     public static final VoxelShape NORTH_CENTER =
     createOffsetShape(NORTH_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape NORTH_UPPER =
@@ -106,16 +93,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(NORTH_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape NORTH_UPPERWEST =
     createOffsetShape(NORTH_CENTER_BASE, -.375, .375, 0);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> SOUTH_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, .4375, .5), Triple.of(.625, .5625, 1.)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .375, .5), Triple.of(.5625, .625, 1.)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> SOUTH_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0.4375, 0.5), new Vector3d(0.625, 0.5625, 1.)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.375, 0.5), new Vector3d(0.5625, 0.625, 1.)
+    ));
     public static final VoxelShape SOUTH_CENTER =
     createOffsetShape(SOUTH_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape SOUTH_UPPER =
@@ -134,16 +117,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(SOUTH_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape SOUTH_UPPERWEST =
     createOffsetShape(SOUTH_CENTER_BASE, -.375, .375, 0);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> WEST_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(0., .4375, .375), Triple.of(.5, .5625, .625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(0., .375, .4375), Triple.of(.5, .625, .5625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> WEST_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0., 0.4375, 0.375), new Vector3d(0.5, 0.5625, 0.625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0., 0.375, 0.4375), new Vector3d(0.5, 0.625, 0.5625)
+    ));
     public static final VoxelShape WEST_CENTER =
     createOffsetShape(WEST_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape WEST_UPPER =
@@ -162,16 +141,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(WEST_CENTER_BASE, 0, 0, -.375);
     public static final VoxelShape WEST_UPPERNORTH =
     createOffsetShape(WEST_CENTER_BASE, 0, .375, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> EAST_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.5, .4375, .375), Triple.of(1., .5625, .625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.5, .375, .4375), Triple.of(1., .625, .5625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> EAST_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.5, 0.4375, 0.375), new Vector3d(1., 0.5625, 0.625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.5, 0.375, 0.4375), new Vector3d(1., 0.625, 0.5625)
+    ));
     public static final VoxelShape EAST_CENTER =
     createOffsetShape(EAST_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape EAST_UPPER =
@@ -190,16 +165,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(EAST_CENTER_BASE, 0, 0, -.375);
     public static final VoxelShape EAST_UPPERNORTH =
     createOffsetShape(EAST_CENTER_BASE, 0, .375, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> X_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(0., .4375, .375), Triple.of(1., .5625, .625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(0., .375, .4375), Triple.of(1., .625, .5625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> X_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0., 0.4375, 0.375), new Vector3d(1., 0.5625, 0.625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0., 0.375, 0.4375), new Vector3d(1., 0.625, 0.5625)
+    ));
     public static final VoxelShape X_CENTER =
     createOffsetShape(X_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape X_UPPER =
@@ -218,16 +189,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(X_CENTER_BASE, 0, 0, -.375);
     public static final VoxelShape X_UPPERNORTH =
     createOffsetShape(X_CENTER_BASE, 0, .375, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> Y_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, 0., .4375), Triple.of(.625, 1., .5625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, 0., .375), Triple.of(.5625, 1., .625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> Y_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0., 0.4375), new Vector3d(0.625, 1., 0.5625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0., 0.375), new Vector3d(0.5625, 1., 0.625)
+    ));
     public static final VoxelShape Y_CENTER =
     createOffsetShape(Y_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape Y_NORTH =
@@ -246,16 +213,12 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(Y_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape Y_NORTHWEST =
     createOffsetShape(Y_CENTER_BASE, -.375, 0, -.375);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> Z_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, .4375, 0.), Triple.of(.625, .5625, 1.)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .375, 0.), Triple.of(.5625, .625, 1.)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> Z_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0.4375, 0.), new Vector3d(0.625, 0.5625, 1.)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.375, 0.), new Vector3d(0.5625, 0.625, 1.)
+    ));
     public static final VoxelShape Z_CENTER =
     createOffsetShape(Z_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape Z_UPPER =
@@ -274,19 +237,14 @@ extends Block implements ManagedWaterloggable {
     createOffsetShape(Z_CENTER_BASE, -.375, 0, 0);
     public static final VoxelShape Z_UPPERWEST =
     createOffsetShape(Z_CENTER_BASE, -.375, .375, 0);
-    public static final List<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> INTERSECT_CENTER_BASE = List.of(
-        new SimpleImmutableEntry<>(
-            Triple.of(.375, .4375, .4375), Triple.of(.625, .5625, .5625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .375, .4375), Triple.of(.5625, .625, .5625)
-        ),
-        new SimpleImmutableEntry<>(
-            Triple.of(.4375, .4375, .375), Triple.of(.5625, .5625, .625)
-        )
-    );
+    public static final List<Entry<Vector3d, Vector3d>> INTERSECT_CENTER_BASE =
+    List.of(new SimpleImmutableEntry<>(
+        new Vector3d(0.375, 0.4375, 0.4375), new Vector3d(0.625, 0.5625, .5625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.375, 0.4375), new Vector3d(0.5625, 0.625, .5625)
+    ), new SimpleImmutableEntry<>(
+        new Vector3d(0.4375, 0.4375, 0.375), new Vector3d(0.5625, 0.5625, .625)
+    ));
     public static final VoxelShape INTERSECT_CENTER =
     createOffsetShape(INTERSECT_CENTER_BASE, 0, 0, 0);
     public static final VoxelShape INTERSECT_UPPER =
@@ -296,60 +254,51 @@ extends Block implements ManagedWaterloggable {
     public static final VoxelShape INTERSECT_UPPERNORTHEAST =
     createOffsetShape(INTERSECT_CENTER_BASE, .375, .375, -.375);
 
-    public static VoxelShape createOffsetShape(Iterable<Entry<
-        Triple<Double, Double, Double>, Triple<Double, Double, Double>
-    >> shape, double offX, double offY, double offZ) {
-        Iterator<Entry<
-            Triple<Double, Double, Double>, Triple<Double, Double, Double>
-        >> itt = shape.iterator();
+    public static VoxelShape createOffsetShape(@NotNull Iterable<
+        ? extends @NotNull Entry<
+            ? extends @NotNull Vector3d, ? extends @NotNull Vector3d
+        >
+    > shape, double offX, double offY, double offZ) {
+        Iterator<? extends Entry<? extends Vector3d, ? extends Vector3d>> itt =
+        shape.iterator();
         if (!(itt.hasNext())) {
             return empty();
         }
-        Entry<Triple<Double, Double, Double>, Triple<Double, Double, Double>> e
-        = itt.next();
-        VoxelShape r = cuboid(e.getKey().getLeft().doubleValue() + offX,
-                              e.getKey().getMiddle().doubleValue() + offY,
-                              e.getKey().getRight().doubleValue() + offZ,
-                              e.getValue().getLeft().doubleValue() + offX,
-                              e.getValue().getMiddle().doubleValue() + offY,
-                              e.getValue().getRight().doubleValue() + offZ);
+        Entry<? extends Vector3d, ? extends Vector3d> e = itt.next();
+        Vector3d min = e.getKey();
+        Vector3d max = e.getValue();
+        VoxelShape r = cuboid(
+            min.x + offX, min.y + offY, min.z + offZ,
+            max.x + offX, max.y + offY, max.z + offZ
+        );
         while (itt.hasNext()) {
             e = itt.next();
-            r = union(r, cuboid(e.getKey().getLeft().doubleValue() + offX,
-                                e.getKey().getMiddle().doubleValue() + offY,
-                                e.getKey().getRight().doubleValue() + offZ,
-                                e.getValue().getLeft().doubleValue() + offX,
-                                e.getValue().getMiddle().doubleValue() + offY,
-                                e.getValue().getRight().doubleValue() + offZ));
+            min = e.getKey();
+            max = e.getValue();
+            r = union(r, cuboid(
+                min.x + offX, min.y + offY, min.z + offZ,
+                max.x + offX, max.y + offY, max.z + offZ
+            ));
         }
         return r;
     }
 
     protected AbstractCylindricalRodBlock(Settings settings) {
         super(settings);
-        if (this.getWaterloggedProperty()) {
-            this.setDefaultState(this.getDefaultState()
-                                 .with(WATERLOGGED, false));
-        }
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(
         BlockState state, Direction direction, BlockState neighborState,
-        WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (this.getWaterloggedProperty() &&
-            state.get(WATERLOGGED).booleanValue()) {
-            world.scheduleFluidTick(pos, WATER, WATER.getTickRate(world));
+        WorldAccess world, BlockPos pos, BlockPos neighborPos
+    ) {
+        FluidState fs = state.getFluidState();
+        if (!fs.isEmpty()) {
+            Fluid fluid = fs.getFluid();
+            world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(
             state, direction, neighborState, world, pos, neighborPos
         );
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return (this.getWaterloggedProperty() &&
-                state.get(WATERLOGGED).booleanValue()) ?
-               WATER.getStill(false) : super.getFluidState(state);
     }
 }
